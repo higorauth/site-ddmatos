@@ -1,0 +1,32 @@
+# Publica a pasta dist/ no GitHub Pages a cada envio para a main.
+# Para mudar o site: edite dados-da-empresa.json ou src/, rode python3 build.py e envie as mudanças.
+name: Publicar site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.publica.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: publica
+        uses: actions/deploy-pages@v4

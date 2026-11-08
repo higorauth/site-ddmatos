@@ -1,0 +1,403 @@
+<a class="pulo" href="#conteudo">Pular para o conteúdo</a>
+<canvas id="cena" aria-hidden="true"></canvas>
+<div id="marcas" aria-hidden="true"></div>
+
+<header class="topo" id="topo">
+  <div class="topo-in">
+    <a class="marca" href="#inicio">
+      <svg class="marca-ave" viewBox="240 150 620 520" aria-hidden="true"><path fill-rule="evenodd" d="M520 176C458 160 404 164 352 196C322 200 292 216 276 246C262 272 258 306 270 344C276 322 288 306 312 302C330 299 350 304 368 314C366 332 374 348 388 360C420 426 404 512 374 604L368 660L846 660C824 600 806 546 780 490C748 420 716 330 664 268C626 222 574 190 520 176ZM444 211a29 29 0 1 0 .01 0Z"/></svg>
+      <span>{{nome}}</span>
+    </a>
+    <nav class="menu" aria-label="Seções do site">
+      <a href="#pragas">Pragas</a>
+      <a href="#desentupimento">Desentupimento</a>
+      <a href="#caixa-dagua">Caixa d'água</a>
+      <a href="#quem-responde">Licenças</a>
+      <a href="#preco-e-garantia">Preço e garantia</a>
+      <a href="#empresas">Empresas</a>
+    </nav>
+    <a class="botao botao-acao botao-p botao-pulsa" href="{{wa:Olá, vim pelo site. Quero um orçamento. Meu bairro é:}}">{{icone_wa}}<span>WhatsApp</span></a>
+  </div>
+  <div class="progresso" aria-hidden="true"><span id="progresso"></span></div>
+</header>
+
+<main id="conteudo">
+
+<section class="abertura" id="inicio">
+  <div class="faixa">
+    <svg class="ave-reserva" viewBox="240 150 700 850" aria-hidden="true"><path fill-rule="evenodd" d="M520 176C458 160 404 164 352 196C322 200 292 216 276 246C262 272 258 306 270 344C276 322 288 306 312 302C330 299 350 304 368 314C366 332 374 348 388 360C420 426 404 512 374 604C346 706 346 850 402 1000L918 1000C900 820 852 640 780 490C748 420 716 330 664 268C626 222 574 190 520 176ZM444 211a29 29 0 1 0 .01 0Z"/></svg>
+    <div class="abertura-in">
+      <h1>Dedetização em {{cidade}}, com garantia por escrito</h1>
+      <p class="apoio">Baratas, ratos, cupins, formigas e mosquitos em casas, condomínios e empresas de {{regiao}}. Também fazemos desentupimento e limpeza de caixa d'água.</p>
+      <div class="acoes">
+        <a class="botao botao-acao botao-pulsa" href="{{wa:Olá, vim pelo site. Quero um orçamento de dedetização. Meu bairro é:}}">{{icone_wa}}<span>Pedir orçamento no WhatsApp</span></a>
+        <a class="botao botao-linha" href="{{tel}}">Ligar: {{telefone}}</a>
+      </div>
+      <ul class="provas" aria-label="Registros da empresa">
+        <li>Licença Sanitária nº {{licenca_sanitaria}}</li>
+        <li>Responsável técnico: {{rt_nome}}, {{rt_conselho}} nº {{rt_registro}}</li>
+        <li>{{google_nota}} no Google ({{google_avaliacoes}} avaliações)</li>
+      </ul>
+      <a class="porta" href="#empresas">Sou síndico, restaurante ou clínica</a>
+    </div>
+  </div>
+</section>
+
+<section class="olhar" id="olhar" aria-labelledby="olhar-t">
+  <div class="olhar-fixo">
+    <div class="olhar-texto" id="olhar-texto">
+      <h2 id="olhar-t">O gavião é o nosso símbolo de atenção</h2>
+      <p>Antes de aplicar qualquer produto, a gente olha com calma: por onde a praga entra, onde se esconde e o que realmente precisa ser feito. Depois deixa tudo por escrito.</p>
+      <p class="nota">As animações deste site são ilustrações. A vistoria é feita pelo técnico, no local.</p>
+    </div>
+  </div>
+</section>
+
+<section class="pragas" id="pragas" aria-labelledby="pragas-t">
+  <div class="faixa">
+    <div class="coluna">
+      <h2 id="pragas-t">É isso que você viu?</h2>
+      <p class="intro">Cada praga procura lugares diferentes. Escolha a sua e veja por onde a vistoria começa.</p>
+    </div>
+  </div>
+  <nav class="chips" aria-label="Escolha a praga">
+    <div class="chips-in">
+      <a href="#baratas" data-chip="baratas">Baratas</a>
+      <a href="#formigas" data-chip="formigas">Formigas</a>
+      <a href="#ratos" data-chip="ratos">Ratos</a>
+      <a href="#cupins" data-chip="cupins">Cupins</a>
+      <a href="#mosquitos" data-chip="mosquitos">Mosquitos</a>
+    </div>
+  </nav>
+  <div class="faixa">
+    <article class="praga" id="baratas" data-praga="baratas">
+      <h3>Baratas</h3>
+      <figure class="praga-foto"><img src="{{foto:baratas}}" width="960" height="720" loading="lazy" decoding="async" alt="Barata-americana vista de cima, sobre fundo branco"><figcaption>Barata-americana (<i>Periplaneta americana</i>), a barata de esgoto. A adulta mede cerca de 4 cm.</figcaption></figure>
+      <p>Costumam aparecer à noite, perto da pia e dos ralos.</p>
+      <h4>Por onde a vistoria começa</h4>
+      <ul class="lugares"><li>Ralos</li><li>Caixa de gordura</li><li>Atrás da geladeira</li><li>Armários da cozinha</li></ul>
+      <dl class="termos"><div><dt>Garantia</dt><dd>{{baratas_garantia}}</dd></div><div><dt>A partir de</dt><dd>R$ {{baratas_preco}}</dd></div></dl>
+      <a class="botao botao-acao" href="{{wa:Olá, vim pelo site. Quero um orçamento para baratas. Meu bairro é:}}">{{icone_wa}}<span>Pedir orçamento para baratas</span></a>
+    </article>
+    <article class="praga" id="formigas" data-praga="formigas">
+      <h3>Formigas</h3>
+      <figure class="praga-foto"><img src="{{foto:formigas}}" width="960" height="720" loading="lazy" decoding="async" alt="Rainha e operária de formiga, de cor castanha, sobre fundo claro"><figcaption>Rainha e operária de <i>Nylanderia fulva</i>, formiga nativa da América do Sul. A operária mede cerca de 3 mm.</figcaption></figure>
+      <p>Fazem trilha na parede, na bancada ou perto dos alimentos.</p>
+      <h4>Por onde a vistoria começa</h4>
+      <ul class="lugares"><li>Frestas da parede</li><li>Rodapés</li><li>Armários de alimentos</li></ul>
+      <dl class="termos"><div><dt>Garantia</dt><dd>{{formigas_garantia}}</dd></div><div><dt>A partir de</dt><dd>R$ {{formigas_preco}}</dd></div></dl>
+      <a class="botao botao-acao" href="{{wa:Olá, vim pelo site. Quero um orçamento para formigas. Meu bairro é:}}">{{icone_wa}}<span>Pedir orçamento para formigas</span></a>
+    </article>
+    <article class="praga" id="ratos" data-praga="ratos">
+      <h3>Ratos</h3>
+      <figure class="praga-foto"><img src="{{foto:ratos}}" width="960" height="720" loading="lazy" decoding="async" alt="Ratazana marrom de perfil, no chão de terra, entre folhas"><figcaption>Ratazana (<i>Rattus norvegicus</i>). O corpo mede cerca de 20 cm, sem contar a cauda.</figcaption></figure>
+      <p>Dão sinal com barulho no forro à noite e embalagens roídas.</p>
+      <h4>Por onde a vistoria começa</h4>
+      <ul class="lugares"><li>Forro</li><li>Garagem</li><li>Vãos junto ao muro</li><li>Caixa de gordura</li></ul>
+      <dl class="termos"><div><dt>Garantia</dt><dd>{{ratos_garantia}}</dd></div><div><dt>A partir de</dt><dd>R$ {{ratos_preco}}</dd></div></dl>
+      <a class="botao botao-acao" href="{{wa:Olá, vim pelo site. Quero um orçamento para ratos. Meu bairro é:}}">{{icone_wa}}<span>Pedir orçamento para ratos</span></a>
+    </article>
+    <article class="praga" id="cupins" data-praga="cupins">
+      <h3>Cupins</h3>
+      <figure class="praga-foto"><img src="{{foto:cupins}}" width="960" height="720" loading="lazy" decoding="async" alt="Grupo de cupins claros, alguns com a cabeça alaranjada, sobre fundo cinza"><figcaption>Cupins-subterrâneos (<i>Coptotermes</i>): operários claros e soldados de cabeça alaranjada. Medem cerca de 5 mm.</figcaption></figure>
+      <p>Deixam pó fino perto da madeira ou asas soltas perto das janelas.</p>
+      <h4>Por onde a vistoria começa</h4>
+      <ul class="lugares"><li>Batentes</li><li>Rodapés</li><li>Móveis de madeira</li><li>Madeira do telhado</li></ul>
+      <dl class="termos"><div><dt>Garantia</dt><dd>{{cupins_garantia}}</dd></div><div><dt>A partir de</dt><dd>R$ {{cupins_preco}}</dd></div></dl>
+      <a class="botao botao-acao" href="{{wa:Olá, vim pelo site. Quero um orçamento para cupins. Meu bairro é:}}">{{icone_wa}}<span>Pedir orçamento para cupins</span></a>
+    </article>
+    <article class="praga" id="mosquitos" data-praga="mosquitos">
+      <h3>Mosquitos</h3>
+      <figure class="praga-foto"><img src="{{foto:mosquitos}}" width="960" height="720" loading="lazy" decoding="async" alt="Pernilongo pousado na quina de um tijolo"><figcaption>Pernilongo-doméstico (<i>Culex quinquefasciatus</i>). Mede menos de 1 cm.</figcaption></figure>
+      <p>Aparecem dentro de casa, principalmente no fim da tarde.</p>
+      <h4>Por onde a vistoria começa</h4>
+      <ul class="lugares"><li>Calhas</li><li>Pratos de vasos</li><li>Ralos sem uso</li></ul>
+      <dl class="termos"><div><dt>Garantia</dt><dd>{{mosquitos_garantia}}</dd></div><div><dt>A partir de</dt><dd>R$ {{mosquitos_preco}}</dd></div></dl>
+      <a class="botao botao-acao" href="{{wa:Olá, vim pelo site. Quero um orçamento para mosquitos. Meu bairro é:}}">{{icone_wa}}<span>Pedir orçamento para mosquitos</span></a>
+    </article>
+    <p class="outra coluna">É outra praga? Mande uma foto pelo <a href="{{wa:Olá, vim pelo site. Vou mandar uma foto da praga que encontrei. Meu bairro é:}}">WhatsApp</a> e a gente diz se atende.</p>
+  </div>
+</section>
+
+<section class="pragas servicos" id="servicos" aria-labelledby="serv-t">
+  <div class="faixa">
+    <div class="coluna">
+      <h2 id="serv-t">Também cuidamos do encanamento e da caixa d'água</h2>
+      <p class="intro">Em casas, condomínios e empresas.</p>
+    </div>
+    <article class="praga" id="desentupimento" data-praga="desentupimento">
+      <h3>Desentupimento</h3>
+      <p>Pia, ralo, vaso sanitário, caixa de gordura e rede de esgoto. Você aprova o valor total antes de começarmos.</p>
+      <ul class="itens-servico" aria-label="O que desentupimos"><li>Pia</li><li>Ralo</li><li>Vaso sanitário</li><li>Caixa de gordura</li><li>Rede de esgoto</li></ul>
+      <figure class="desenho" aria-hidden="true">
+        <svg viewBox="0 0 560 400">
+          <rect x="0" y="200" width="560" height="200" rx="0" fill="#F3F6FC"/>
+          <path d="M0 200H560" stroke="#C9D3E8" stroke-width="2"/>
+          <path d="M40 110H240M40 110V200M240 110V200" stroke="#9DB2E8" stroke-width="2" fill="none"/>
+          <path d="M92 110l10 40h76l10-40" fill="#fff" stroke="#1747C8" stroke-width="2.5" stroke-linejoin="round"/>
+          <path d="M196 110V84a15 15 0 0 0-30 0v9" fill="none" stroke="#1747C8" stroke-width="3" stroke-linecap="round"/>
+          <path d="M318 200h24" stroke="#1747C8" stroke-width="4" stroke-linecap="round"/>
+          <rect x="420" y="200" width="88" height="122" rx="6" fill="#fff" stroke="#9DB2E8" stroke-width="2"/>
+          <path d="M412 200h104" stroke="#1747C8" stroke-width="5" stroke-linecap="round"/>
+          <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M140 150V184a22 22 0 0 0 44 0V172H214V300H420M330 200V300M508 300H556" stroke="#C9D5F2" stroke-width="16"/>
+            <path d="M140 150V184a22 22 0 0 0 44 0V172H214V300H420M330 200V300M508 300H556" stroke="#fff" stroke-width="10"/>
+            <path class="fluxo" d="M140 150V184a22 22 0 0 0 44 0V172H214V300H420" stroke="#1747C8" stroke-width="3"/>
+            <path class="fluxo" d="M330 200V300" stroke="#1747C8" stroke-width="3"/>
+            <path class="fluxo" d="M508 300H556" stroke="#1747C8" stroke-width="3"/>
+          </g>
+          <path d="M432 300h64" stroke="#1747C8" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round" opacity=".55"/>
+          <circle cx="162" cy="205" r="6" fill="#D7262E"/><circle class="ponto-alerta" cx="162" cy="205" r="6" fill="none" stroke="#D7262E" stroke-width="2"/>
+          <circle cx="464" cy="268" r="6" fill="#D7262E"/><circle class="ponto-alerta" cx="464" cy="268" r="6" fill="none" stroke="#D7262E" stroke-width="2"/>
+          <g class="rotulos">
+            <text x="96" y="232">Sifão</text>
+            <text x="296" y="186">Ralo</text>
+            <text x="420" y="350">Caixa de gordura</text>
+            <text x="452" y="384">Rede de esgoto</text>
+            <text x="40" y="96">Pia</text>
+          </g>
+        </svg>
+      </figure>
+      <dl class="publicos-mini">
+        <div><dt>Residências</dt><dd>Pia da cozinha, ralo do banheiro, vaso sanitário e o cano até a caixa de inspeção.</dd></div>
+        <div><dt>Condomínios</dt><dd>Colunas de esgoto, caixas de gordura e caixas de inspeção das áreas comuns.</dd></div>
+        <div><dt>Empresas</dt><dd>Cozinhas, restaurantes e lojas, em horário combinado para não parar o atendimento.</dd></div>
+      </dl>
+      <dl class="termos"><div><dt>Garantia</dt><dd>{{desentupimento_garantia}}</dd></div><div><dt>A partir de</dt><dd>R$ {{desentupimento_preco}}</dd></div></dl>
+      <a class="botao botao-acao" href="{{wa:Olá, vim pelo site. Preciso de desentupimento. Meu bairro é:}}">{{icone_wa}}<span>Pedir desentupimento</span></a>
+    </article>
+    <article class="praga" id="caixa-dagua" data-praga="caixa">
+      <h3>Limpeza de caixa d'água</h3>
+      <p>Para casas, condomínios e empresas. No fim, você recebe o registro com a data da limpeza.</p>
+      <figure class="desenho" aria-hidden="true">
+        <svg viewBox="0 0 560 400">
+          <defs><clipPath id="cx-dentro"><path d="M112 112V318A168 34 0 0 0 448 318V112A168 34 0 0 1 112 112Z"/></clipPath></defs>
+          <path d="M110 110V320A170 36 0 0 0 450 320V110" fill="#fff" stroke="#9DB2E8" stroke-width="2"/>
+          <g clip-path="url(#cx-dentro)">
+            <g class="onda">
+              <path d="M0 178q30-9 60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0V420H0Z" fill="#DCE6FB"/>
+              <path d="M0 178q30-9 60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0" fill="none" stroke="#7EA0F5" stroke-width="2"/>
+            </g>
+          </g>
+          <ellipse cx="280" cy="110" rx="170" ry="36" fill="none" stroke="#9DB2E8" stroke-width="2"/>
+          <path d="M556 150H452M452 150L404 172" fill="none" stroke="#1747C8" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="398" cy="175" r="10" fill="#fff" stroke="#1747C8" stroke-width="2.5"/>
+          <path d="M110 298H44V364" fill="none" stroke="#C9D5F2" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M110 298H44V364" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+          <g class="tampa"><ellipse cx="280" cy="102" rx="178" ry="38" fill="#fff" stroke="#1747C8" stroke-width="2.5"/><rect x="266" y="78" width="28" height="12" rx="6" fill="#1747C8"/></g>
+          <circle cx="250" cy="330" r="4" fill="#D7262E" opacity=".8"/><circle cx="292" cy="336" r="3" fill="#D7262E" opacity=".7"/><circle cx="318" cy="328" r="3.5" fill="#D7262E" opacity=".8"/>
+          <circle cx="280" cy="332" r="6" fill="none" stroke="#D7262E" stroke-width="2" class="ponto-alerta"/>
+          <g class="rotulos">
+            <text x="470" y="66">Tampa</text>
+            <text x="404" y="208">Boia</text>
+            <text x="38" y="392">Saída</text>
+            <text x="216" y="372">Sujeira no fundo</text>
+          </g>
+        </svg>
+      </figure>
+      <ol class="etapas-mini" aria-label="Como fazemos a limpeza">
+        <li><strong>Esvaziar.</strong> Fechamos a entrada de água e deixamos só um pouco no fundo para a limpeza.</li>
+        <li><strong>Esfregar.</strong> Paredes e fundo, sem sabão, detergente ou produto que deixe resíduo.</li>
+        <li><strong>Desinfetar.</strong> Aplicamos solução com cloro e esperamos o tempo de ação.</li>
+        <li><strong>Encher e tampar.</strong> A tampa fica bem fechada e a data da próxima limpeza vai anotada.</li>
+      </ol>
+      <p class="nota">Em cozinhas profissionais, a norma sanitária pede limpeza da caixa d'água a cada seis meses, com registro.</p>
+      <dl class="termos"><div><dt>Garantia</dt><dd>{{caixa_garantia}}</dd></div><div><dt>A partir de</dt><dd>R$ {{caixa_preco}}</dd></div></dl>
+      <a class="botao botao-acao" href="{{wa:Olá, vim pelo site. Quero agendar a limpeza da caixa d'água. Meu bairro é:}}">{{icone_wa}}<span>Agendar limpeza da caixa d'água</span></a>
+    </article>
+  </div>
+</section>
+
+<section class="como" id="como-funciona" aria-labelledby="como-t">
+  <div class="faixa">
+    <div class="coluna">
+      <h2 id="como-t">Do primeiro contato ao retorno, em quatro passos</h2>
+      <ol class="passos">
+        <li><h3>Você chama</h3><p>Mande o bairro e a praga pelo WhatsApp. Se puder, mande uma foto.</p></li>
+        <li><h3>A gente avalia e manda o orçamento por escrito</h3><p>Você vê o valor e o que está incluído antes de qualquer serviço começar.</p></li>
+        <li><h3>O técnico chega identificado</h3><p>Antes da visita, você recebe o nome e a foto dele. No fim, ele entrega o comprovante.</p></li>
+        <li><h3>Se a praga tratada voltar no prazo, a gente volta</h3><p>Chame no mesmo WhatsApp, com o número do comprovante.</p></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="comprovante" id="comprovante" aria-labelledby="comp-t">
+  <div class="faixa">
+    <div class="coluna">
+      <h2 id="comp-t">O serviço termina com um comprovante na sua mão</h2>
+      <p class="intro">A RDC 622/2022, norma da Anvisa, pede 11 informações no comprovante de execução. É isto que você recebe.</p>
+      <ol class="itens">
+        <li data-linha="0"><strong>Cliente</strong><span>Quem contratou o serviço</span></li>
+        <li data-linha="1"><strong>Endereço</strong><span>Onde o serviço foi feito</span></li>
+        <li data-linha="2"><strong>Pragas-alvo</strong><span>O que foi tratado</span></li>
+        <li data-linha="3"><strong>Data</strong><span>Quando o serviço foi feito</span></li>
+        <li data-linha="4"><strong>Assistência técnica</strong><span>Prazo por extenso, para cada praga</span></li>
+        <li data-linha="5"><strong>Grupo químico</strong><span>A que grupo o produto pertence</span></li>
+        <li data-linha="6"><strong>Produto</strong><span>Nome e concentração</span></li>
+        <li data-linha="7"><strong>Orientações</strong><span>O que fazer depois da aplicação</span></li>
+        <li data-linha="8"><strong>Responsável técnico</strong><span>Nome e registro no conselho</span></li>
+        <li data-linha="9"><strong>Centro de Informação Toxicológica</strong><span>Telefone para consulta</span></li>
+        <li data-linha="10"><strong>Empresa</strong><span>Dados, licenças e validades</span></li>
+      </ol>
+      <p class="fecho">Guarde este documento. É com ele que você aciona a garantia.</p>
+    </div>
+  </div>
+</section>
+
+<div class="papel">
+
+<section class="bloco" id="quem-responde" aria-labelledby="quem-t">
+  <div class="faixa">
+    <h2 id="quem-t">Quem responde pelo serviço</h2>
+    <p class="intro">Estes são os registros da empresa. Confira antes de contratar.</p>
+    <div class="ficha-grade">
+      <dl class="ficha">
+        <div><dt>Licença sanitária</dt><dd><b>Nº {{licenca_sanitaria}}</b><span>{{licenca_sanitaria_orgao}}</span><span>Válida até {{licenca_sanitaria_validade}}</span></dd></div>
+        <div><dt>Licença ambiental ou termo equivalente</dt><dd><b>Nº {{licenca_ambiental}}</b><span>{{licenca_ambiental_orgao}}</span><span>Válida até {{licenca_ambiental_validade}}</span></dd></div>
+        <div><dt>Responsável técnico</dt><dd><b>{{rt_nome}}</b><span>{{rt_profissao}}</span><span>{{rt_conselho}} nº {{rt_registro}}</span></dd></div>
+        <div><dt>Empresa</dt><dd><b>{{razao_social}}</b><span>CNPJ {{cnpj}}</span></dd></div>
+        <div><dt>Produtos</dt><dd><span>Usamos saneantes com registro na Anvisa.</span></dd></div>
+        <div><dt>Avaliações</dt><dd><b>{{google_nota}} no Google</b><span>{{google_avaliacoes}} avaliações</span></dd></div>
+      </dl>
+      <figure class="foto-vaga"><figcaption>A foto real da equipe e do veículo entra aqui.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section class="bloco" id="preco-e-garantia" aria-labelledby="preco-t">
+  <div class="faixa">
+    <h2 id="preco-t">Preço e garantia de cada serviço</h2>
+    <p class="intro">O valor final vai por escrito antes de começar.</p>
+    <div class="tabela-rola" tabindex="0" role="region" aria-label="Tabela de preço e garantia">
+      <table class="tabela">
+        <thead><tr><th scope="col">Serviço</th><th scope="col">A partir de</th><th scope="col">O que o valor inclui</th><th scope="col">Garantia</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Baratas</th><td>R$ {{baratas_preco}}</td><td>{{baratas_inclui}}</td><td>{{baratas_garantia}}</td></tr>
+          <tr><th scope="row">Formigas</th><td>R$ {{formigas_preco}}</td><td>{{formigas_inclui}}</td><td>{{formigas_garantia}}</td></tr>
+          <tr><th scope="row">Ratos</th><td>R$ {{ratos_preco}}</td><td>{{ratos_inclui}}</td><td>{{ratos_garantia}}</td></tr>
+          <tr><th scope="row">Cupins</th><td>R$ {{cupins_preco}}</td><td>{{cupins_inclui}}</td><td>{{cupins_garantia}}</td></tr>
+          <tr><th scope="row">Mosquitos</th><td>R$ {{mosquitos_preco}}</td><td>{{mosquitos_inclui}}</td><td>{{mosquitos_garantia}}</td></tr>
+          <tr><th scope="row">Desentupimento</th><td>R$ {{desentupimento_preco}}</td><td>{{desentupimento_inclui}}</td><td>{{desentupimento_garantia}}</td></tr>
+          <tr><th scope="row">Limpeza de caixa d'água</th><td>R$ {{caixa_preco}}</td><td>{{caixa_inclui}}</td><td>{{caixa_garantia}}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="duas">
+      <div>
+        <h3>O que muda o preço</h3>
+        <ul class="lista"><li>Tamanho do local</li><li>Tipo de praga ou de entupimento</li><li>Quanto o problema já se espalhou</li><li>Acesso aos pontos de trabalho</li><li>Tamanho e acesso da caixa d'água</li></ul>
+      </div>
+      <div>
+        <h3>Como a garantia funciona</h3>
+        <p>Se a praga tratada voltar dentro do prazo, voltamos para reaplicar, sem custo de {{garantia_cobre}}. O prazo começa na data do serviço. Para valer, é preciso {{garantia_condicoes}}. Não cobre {{garantia_exclusoes}}.</p>
+        <p>No desentupimento e na limpeza de caixa d'água, as condições da garantia vão por escrito no orçamento.</p>
+        <p>Para acionar, mande mensagem no mesmo WhatsApp com o número do comprovante. Respondemos em até {{garantia_resposta}}. Esta garantia complementa a garantia legal do Código de Defesa do Consumidor.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bloco" id="empresas" aria-labelledby="emp-t">
+  <div class="faixa">
+    <h2 id="emp-t">Para condomínios, restaurantes e clínicas</h2>
+    <p class="intro">Você recebe uma proposta com valor fechado e os documentos de cada visita.</p>
+    <div class="tres">
+      <div>
+        <h3>Condomínios</h3>
+        <ul class="lista"><li>Prestar contas na assembleia com os documentos em ordem</li><li>Avisar os moradores antes da aplicação</li><li>Manter a periodicidade definida pelo responsável técnico</li></ul>
+      </div>
+      <div>
+        <h3>Restaurantes e alimentação</h3>
+        <ul class="lista"><li>Ter o comprovante à mão quando a vigilância pedir</li><li>Fazer o serviço sem atrapalhar a operação</li><li>Seguir uma rotina com datas combinadas</li></ul>
+      </div>
+      <div>
+        <h3>Clínicas e saúde</h3>
+        <ul class="lista"><li>Manter ações contínuas, com registro disponível</li><li>Combinar horários que respeitem os atendimentos</li><li>Guardar o histórico de cada visita</li></ul>
+      </div>
+    </div>
+    <div class="proposta">
+      <div class="proposta-txt">
+        <h3>O que vem no pacote de documentos</h3>
+        <ul class="lista"><li>Proposta com valor fechado</li><li>Licenças da empresa</li><li>Dados do responsável técnico</li><li>Modelo de comprovante</li><li>Modelo de aviso aos moradores, para condomínios</li></ul>
+      </div>
+      <form class="form" id="form-proposta" novalidate>
+        <h3>Pedir proposta</h3>
+        <div class="campo"><label for="f-nome">Nome</label><input id="f-nome" name="nome" autocomplete="name" required></div>
+        <div class="campo"><label for="f-tel">Telefone</label><input id="f-tel" name="telefone" type="tel" inputmode="tel" autocomplete="tel" required></div>
+        <div class="campo"><label for="f-tipo">Tipo de local</label>
+          <select id="f-tipo" name="tipo" required><option value="">Escolha uma opção</option><option>Condomínio</option><option>Restaurante ou alimentação</option><option>Clínica ou saúde</option><option>Outro tipo de empresa</option></select></div>
+        <div class="campo"><label for="f-servico">Serviço</label>
+          <select id="f-servico" name="servico" required><option value="">Escolha uma opção</option><option>Dedetização</option><option>Desentupimento</option><option>Limpeza de caixa d'água</option><option>Mais de um serviço</option></select></div>
+        <div class="campo campo-largo"><label for="f-cidade">Cidade</label><input id="f-cidade" name="cidade" autocomplete="address-level2" required></div>
+        <p class="erro" id="form-erro" role="alert" hidden></p>
+        <button class="botao botao-acao" type="submit"><span>Pedir proposta</span></button>
+        <p class="nota">Usamos estes dados só para responder ao seu pedido. <a href="#privacidade">Leia o aviso de privacidade</a>.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="bloco" id="cuidados" aria-labelledby="cui-t">
+  <div class="faixa duas">
+    <div>
+      <h2 id="cui-t">Cuidados antes e depois</h2>
+      <p class="intro">Informamos antes do serviço quando crianças e animais devem sair e quando podem voltar. As orientações vão por escrito, revisadas pelo responsável técnico.</p>
+      <p class="intro">O técnico usa equipamento de proteção e segue procedimentos escritos. Usamos saneantes com registro na Anvisa.</p>
+    </div>
+    <div class="perguntas">
+      <h3>Perguntas frequentes</h3>
+      <details><summary>Quanto custa uma dedetização?</summary><p>Depende da praga, do tamanho do local e do que a vistoria encontrar. A tabela acima mostra o valor inicial. O valor final vai por escrito antes de começar.</p></details>
+      <details><summary>Posso ficar em casa durante o serviço?</summary><p>Depende do produto e do local. Antes da visita, informamos por escrito quando sair e quando voltar, inclusive para gestantes, crianças e animais.</p></details>
+      <details><summary>A praga pode voltar?</summary><p>Pode. Ovos que já estavam no local, entrada pelo vizinho e a limpeza do ambiente influenciam o resultado. Por isso cada praga tem um prazo de assistência por escrito.</p></details>
+      <details><summary>O preço do desentupimento pode mudar no meio do serviço?</summary><p>Você aprova o valor total antes de começarmos. Se aparecer algo fora do combinado, paramos e pedimos sua aprovação antes de continuar.</p></details>
+      <details><summary>De quanto em quanto tempo limpar a caixa d'água?</summary><p>Em cozinhas profissionais, a norma sanitária pede limpeza a cada seis meses, com registro. Em casa, seis meses também é a recomendação mais comum.</p></details>
+      <details><summary>Detetização e dedetização são a mesma coisa?</summary><p>Sim. Muita gente escreve detetização, mas a grafia correta é dedetização. O serviço é o mesmo.</p></details>
+      <details><summary>Vocês usam gaviões no serviço?</summary><p>Não. O gavião é o nosso símbolo. Não realizamos falcoaria.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="bloco bloco-fim" id="onde" aria-labelledby="onde-t">
+  <div class="faixa">
+    <h2 id="onde-t">Onde atendemos</h2>
+    <dl class="onde">
+      <div><dt>Cidade e região</dt><dd>{{cidade}} e {{regiao}}</dd></div>
+      <div><dt>Bairros</dt><dd>{{bairros}}</dd></div>
+      <div><dt>Sede</dt><dd>{{endereco}}</dd></div>
+      <div><dt>Horário</dt><dd>{{horario}}</dd></div>
+    </dl>
+  </div>
+</section>
+
+</div>
+
+<section class="final" id="fale" aria-labelledby="fale-t">
+  <div class="faixa">
+    <div class="coluna">
+      <h2 id="fale-t">Mande o bairro e o serviço. A gente responde por aqui.</h2>
+      <div class="acoes">
+        <a class="botao botao-acao botao-pulsa" href="{{wa:Olá, vim pelo site. Quero um orçamento. Meu bairro é:}}">{{icone_wa}}<span>Pedir orçamento no WhatsApp</span></a>
+        <a class="botao botao-linha" href="{{tel}}">Ligar: {{telefone}}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="rodape">
+  <div class="faixa">
+    <p>{{razao_social}}<br>CNPJ {{cnpj}}<br>{{endereco}}<br>{{telefone}}<br>{{email}}</p>
+    <p>Licença Sanitária nº {{licenca_sanitaria}}, {{licenca_sanitaria_orgao}}, válida até {{licenca_sanitaria_validade}}<br>Licença Ambiental nº {{licenca_ambiental}} ou termo equivalente, {{licenca_ambiental_orgao}}, válida até {{licenca_ambiental_validade}}<br>Responsável técnico: {{rt_nome}}, {{rt_profissao}}, {{rt_conselho}} nº {{rt_registro}}</p>
+    <div class="rodape-det">
+      <details id="privacidade"><summary>Aviso de privacidade</summary><p>Usamos os dados que você envia só para responder ao seu pedido. Este site não usa rastreadores de anúncio. Para falar sobre seus dados, escreva para {{email_privacidade}}.</p></details>
+      <p class="acess"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="6.4" r="1.7" fill="currentColor"/><path d="M6.6 9.2c3.6 1 7.2 1 10.8 0M12 10.4v4m0 0-2.6 5m2.6-5 2.6 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Acessibilidade: o site pode ser usado pelo teclado, e o botão de pausa desliga as animações.</p>
+    </div>
+    <p class="creditos">Fotos das pragas: barata, <a href="https://commons.wikimedia.org/wiki/File:Periplaneta_americana_-_American_cockroach_(25859665686)_(cropped).jpg">Insects Unlocked, Universidade do Texas</a> (CC0); formigas, <a href="https://commons.wikimedia.org/wiki/File:Nylanderia_fulva_-_Tawny_Crazy_Ant_(31569780291).jpg">Insects Unlocked</a> (CC0), recortada; ratazana, <a href="https://commons.wikimedia.org/wiki/File:Rattus_norvegicus_-_%D0%9B%D0%B0%D1%80%D0%B8%D1%81%D0%B0_%D0%90%D1%80%D1%82%D0%B5%D0%BC%D1%8C%D0%B5%D0%B2%D0%B0_-_601255327_(cropped).jpeg">Лариса Артемьева</a> (CC0); cupins, <a href="https://commons.wikimedia.org/wiki/File:Coptotermes_formosanus_shiraki_USGov_k8204-7.jpg">Scott Bauer, USDA</a> (domínio público), com o fundo recolorido; pernilongo, <a href="https://commons.wikimedia.org/wiki/File:Culex_quinquefasciatus_-_inat_83267718.jpg">Robert Webster</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.pt-br">CC BY-SA 4.0</a>, recortada.</p>
+  </div>
+</footer>
+
+<button class="pausa" id="pausa" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="p-pausa" d="M8 5h3v14H8zM13 5h3v14h-3z"/><path class="p-play" d="M8 5l11 7-11 7z"/></svg><span id="pausa-txt">Pausar animações</span></button>
+{{aviso_modelo}}
+<div class="recado" id="recado" role="status" hidden></div>
