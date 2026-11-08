@@ -453,6 +453,8 @@
   /* ---------- estado ---------- */
   const calmo = () => raiz.classList.contains('calmo');
   const tem3d = () => !!(window.Casa3D && window.Casa3D.pronta);
+  // A casa de verdade (fotos) cobre a casa de pontos depois do escaneamento.
+  const temCasa = () => tem3d() || !!(window.Vistoria && window.Vistoria.pronta);
   /* Gravação dos vídeos da casa (ferramenta de build): quadro a quadro, câmera centrada, sem balanço. */
   let gravando = null, manual = false, relogio = 0;
   const est = {
@@ -733,10 +735,11 @@
   /* Entrega o quadro à casa 3D, com a mesma câmera. */
   const s3 = { vis: 0, solido: 0, abre: 0, praga: null, t: 0, calmo: false, hot: null };
   function manda3d(cam, vis) {
-    const usa3d = tem3d(), cv = window.CasaVideo, usaVideo = !usa3d && cv && cv.ativo;
-    if (!usa3d && !usaVideo) return;
+    const vt = window.Vistoria && window.Vistoria.pronta ? window.Vistoria : null;
+    const usa3d = tem3d(), cv = window.CasaVideo, usaVideo = !usa3d && !vt && cv && cv.ativo;
+    if (!vt && !usa3d && !usaVideo) return;
     s3.vis = vis; s3.solido = est.solido; s3.abre = est.abre; s3.praga = est.pragaId; s3.t = est.t; s3.calmo = calmo(); s3.hot = est.hot;
-    if (usa3d) window.Casa3D.quadro(cam || camCasa(est.t), s3); else cv.quadro(s3);
+    if (vt) vt.quadro(s3); else if (usa3d) window.Casa3D.quadro(cam || camCasa(est.t), s3); else cv.quadro(s3);
   }
 
   /* ---------- laço ---------- */
@@ -785,7 +788,7 @@
         }
         if (est.forma > .001 && ca) {
           const cam = camCasa(est.t);
-          if (!(tem3d() && est.solido > .995 && est.morf < .005) && !raiz.classList.contains('video-casa')) desenhaCasa(cam, est.t, fatia(est.forma, 0, .2));
+          if (!(temCasa() && est.solido > .995 && est.morf < .005) && !raiz.classList.contains('video-casa')) desenhaCasa(cam, est.t, fatia(est.forma, 0, .2));
           atualizaEtiquetas(cam);
           manda3d(cam, est.solido > .001 ? fatia(est.forma, 0, .2) * (1 - fatia(est.morf, .55, .95)) : 0);
         } else { if (marcas) marcas.classList.remove('ligada'); manda3d(null, 0); }

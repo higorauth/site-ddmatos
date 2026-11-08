@@ -27,10 +27,11 @@ Em `dist/fontes/` sobraram `saira.woff2` e `atkinson.woff2`, da versão anterior
 - `dados-da-empresa.json`: o único arquivo que precisa ser editado.
 - `src/corpo.html`: textos da página.
 - `src/estilo.css`: aparência. Cores branco, vermelho e azul; fonte do sistema da Apple (SF Pro), com Inter nos outros aparelhos; botões no estilo do site da Meppy.
-- `src/cena.js`: animação em pontos (WebGL). Desenha o gavião, a casa de pontos e o comprovante, e controla a câmera da casa.
-- `src/casa3d.js`: a casa em 3D, com as pragas animadas, o encanamento e a caixa d'água. Usa o Three.js, que só é baixado quando a pessoa começa a rolar. Em aparelho sem placa de vídeo, entra a casa em vídeo (veja `src/videos/`).
-- `src/vendor/three.module.min.js`: Three.js r170 (licença MIT).
-- `src/videos/`: a mesma casa 3D gravada em vídeo. Quando o navegador não tem placa de vídeo (ou ela travou), o site mostra esses vídeos no lugar da casa 3D, e o gavião continua animado em 2D. Se a casa 3D mudar, grave de novo com `ferramentas/grava-casa.mjs`.
+- `src/cena.js`: animação em pontos. Desenha o gavião, o mergulho no olho e o comprovante, e faz o escaneamento que revela a casa. Usa WebGL; sem placa de vídeo, desenha o mesmo gavião em 2D.
+- `src/vistoria.js`: a casa de verdade. Mostra a foto de cada cômodo, as marcas vermelhas de onde a vistoria começa e a lente com o vídeo da praga. É feita só com fotos e vídeos, então funciona igual sem placa de vídeo.
+- `src/vistoria-cenas.js`: a configuração da casa. Para cada capítulo: a foto, o ponto da foto que a câmera mostra no computador e no celular, as marcas e a lente. As posições são frações da foto, de 0 a 1 (0,5 é o meio).
+- `src/midia/`: fotos dos cômodos (Pexels) e vídeos curtos das pragas (Wikimedia Commons, Pexels, Pixabay e Mixkit), já recortados e comprimidos. São de banco de imagens. O site avisa que servem de ilustração, e os créditos ficam no rodapé. O vídeo dos cupins é CC BY 2.0, por isso o crédito com o link da licença não pode sair. Para usar fotos da própria empresa, troque o arquivo mantendo o nome e ajuste as marcas em `vistoria-cenas.js`.
+- `src/casa3d.js`, `src/vendor/three.module.min.js`, `src/videos/` e `ferramentas/grava-casa.mjs`: a casa 3D da versão anterior. Não entram mais no site. Ficaram no repositório só como histórico e podem ser apagados.
 - `src/fotos/`: fotos das pragas. Todas têm licença livre, e os créditos ficam no rodapé. A do pernilongo é CC BY-SA 4.0, por isso o crédito com o link da licença não pode sair.
 - `src/app.js`: comportamento da página.
 - `ferramentas/pinta-gaviao.js`: desenha o gavião provisório. É aqui que a logo real entra.

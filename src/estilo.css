@@ -48,7 +48,7 @@ a { color: inherit; text-underline-offset: .18em; }
 .nota { font-size: .875rem; color: var(--texto-2); letter-spacing: -.01em; }
 
 /* Lacunas: dados que só a empresa pode informar. */
-.lacuna { color: #B3121B; border-bottom: 1.5px dashed currentColor; background: #FFF0F0; padding-inline: .14em; border-radius: 3px; font-style: normal; font-weight: inherit; }
+.lacuna { color: var(--azul); border-bottom: 1px dashed rgb(23 71 200 / .55); background: rgb(23 71 200 / .07); padding-inline: .2em; border-radius: 4px; font-style: normal; font-weight: inherit; }
 h1 .lacuna, h2 .lacuna { background: none; padding: 0; border-bottom: 0; text-decoration: underline dashed .045em; text-underline-offset: .06em; }
 
 /* Cena. */
@@ -128,9 +128,9 @@ main { z-index: 2; }
 .abertura-in { display: grid; gap: 16px; }
 .apoio { color: var(--texto-2); font-size: 1.0625rem; line-height: 1.42; letter-spacing: -.012em; }
 .abertura .acoes .botao { flex: 1 1 100%; }
-.provas { display: grid; gap: 3px; font-size: .875rem; line-height: 1.35; color: var(--texto-2); letter-spacing: -.01em; }
+.provas { display: flex; flex-wrap: wrap; gap: 6px 22px; padding-top: 14px; border-top: 1px solid var(--fio); font-size: .875rem; line-height: 1.35; color: var(--texto-2); letter-spacing: -.01em; }
 .provas li { position: relative; padding-left: 14px; }
-.provas li::before { content: ""; position: absolute; left: 0; top: .5em; width: 6px; height: 6px; border-radius: 50%; background: var(--azul); }
+.provas li::before { content: ""; position: absolute; left: 0; top: .32em; width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--azul); }
 .porta { font-weight: 600; color: var(--azul); width: fit-content; padding-block: 4px; text-decoration: none; }
 .porta:hover { text-decoration: underline; }
 
@@ -152,7 +152,7 @@ main { z-index: 2; }
 .chips a:hover { color: var(--texto); }
 .chips a.ativo { color: var(--texto); background: var(--branco); box-shadow: 0 1px 2px rgb(10 26 58 / .08), 0 4px 12px rgb(10 26 58 / .08); }
 .chips.desliza a.ativo { background: transparent; box-shadow: none; }
-.praga { scroll-margin-top: 150px; position: relative; display: grid; gap: 14px; max-width: 28rem; margin-top: 46vh; padding: 18px; border-radius: 28px; background: rgb(255 255 255 / .96); box-shadow: 0 0 0 1px var(--fio), 0 14px 36px rgb(10 26 58 / .08); }
+.praga { scroll-margin-top: 150px; position: relative; display: grid; gap: 14px; max-width: 28rem; margin-top: 60vh; padding: 18px; border-radius: 28px; background: rgb(255 255 255 / .96); box-shadow: 0 0 0 1px var(--fio), 0 14px 36px rgb(10 26 58 / .08); }
 .praga:first-of-type { margin-top: 95vh; }
 .praga h3 { font-size: clamp(2rem, 1.55rem + 1.6vw, 2.9rem); font-weight: 700; line-height: 1.02; letter-spacing: -.04em; }
 .praga-foto { margin: 0; display: grid; gap: 8px; }
@@ -171,9 +171,10 @@ main { z-index: 2; }
 /* Como funciona. */
 .como { padding-block: 20vh 10vh; }
 .passos { counter-reset: passo; margin-top: 30px; display: grid; }
-.passos li { counter-increment: passo; display: grid; grid-template-columns: 2.8rem 1fr; column-gap: 8px; padding-block: 18px; border-top: 1px solid var(--fio); }
-.passos li::before { content: counter(passo); grid-row: 1 / span 2; font: 300 2.4rem/1 var(--f); letter-spacing: -.04em; color: var(--azul); }
-.passos h3 { font-size: 1.3rem; }
+.passos li { counter-increment: passo; position: relative; display: grid; grid-template-columns: 3rem 1fr; column-gap: 14px; padding-block: 4px 26px; }
+.passos li:not(:last-child)::after { content: ""; position: absolute; left: calc(1.5rem - 1px); top: 3.1rem; bottom: 4px; width: 2px; background: linear-gradient(var(--azul), rgb(23 71 200 / .15)); }
+.passos li::before { content: counter(passo); grid-row: 1 / span 2; display: grid; place-items: center; width: 3rem; height: 3rem; border-radius: 50%; border: 2px solid var(--azul); background: var(--branco); font: 600 1.25rem/1 var(--f); letter-spacing: -.02em; color: var(--azul); }
+.passos h3 { font-size: 1.3rem; padding-top: .55rem; }
 .passos p { color: var(--texto-2); margin-top: 6px; }
 
 /* Comprovante. */
@@ -192,7 +193,7 @@ main { z-index: 2; }
 .papel::before, .papel::after { content: ""; position: absolute; left: 0; right: 0; height: 13px; background-repeat: repeat-x; background-size: 20px 13px; }
 .papel::before { bottom: 100%; margin-bottom: -.5px; background-image: linear-gradient(to top right, var(--nevoa) 50%, transparent 50.5%), linear-gradient(to top left, var(--nevoa) 50%, transparent 50.5%); }
 .papel::after { top: 100%; margin-top: -.5px; background-image: linear-gradient(to bottom right, var(--nevoa) 50%, transparent 50.5%), linear-gradient(to bottom left, var(--nevoa) 50%, transparent 50.5%); }
-.papel .lacuna { background: #FDE6E7; }
+.papel .lacuna { background: rgb(23 71 200 / .08); }
 .bloco { padding-block: clamp(64px, 9vw, 120px) 0; }
 .bloco h2 + p { margin-top: 16px; }
 .bloco-fim { padding-bottom: clamp(64px, 9vw, 120px); }
@@ -234,7 +235,7 @@ main { z-index: 2; }
 .ficha dt { font-size: .875rem; color: var(--texto-2); }
 .ficha dd { display: grid; gap: 1px; }
 .ficha b { font-weight: 650; font-size: 1.25rem; letter-spacing: -.024em; }
-.foto-vaga { margin: 0; min-height: 260px; display: grid; place-items: center; padding: 24px; text-align: center; color: #B3121B; border: 1.5px dashed currentColor; border-radius: 28px; background: repeating-linear-gradient(135deg, transparent 0 10px, rgb(215 38 46 / .07) 10px 11px); }
+.foto-vaga { margin: 0; min-height: 260px; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--azul); border: 1.5px dashed rgb(23 71 200 / .45); border-radius: 28px; background: repeating-linear-gradient(135deg, transparent 0 10px, rgb(23 71 200 / .06) 10px 11px); }
 
 .tabela-rola { overflow-x: auto; margin-top: 26px; border-radius: 22px; background: var(--branco); padding: 4px 20px; }
 .tabela { border-collapse: collapse; width: 100%; min-width: 640px; }
@@ -255,7 +256,7 @@ main { z-index: 2; }
 .proposta h3 { margin-bottom: 12px; }
 .proposta .lista li::before { background: #7EA0F5; }
 .proposta :focus-visible { outline-color: #FFFFFF; }
-.proposta .lacuna { color: #FFB3B6; background: rgb(255 255 255 / .08); }
+.proposta .lacuna { color: #B7CBFF; border-bottom-color: rgb(183 203 255 / .6); background: rgb(255 255 255 / .08); }
 .form { display: grid; gap: 14px; min-width: 0; }
 .campo { display: grid; gap: 6px; min-width: 0; }
 .campo label { font-weight: 600; font-size: .9375rem; }
@@ -286,6 +287,7 @@ main { z-index: 2; }
 .rodape summary { cursor: pointer; color: var(--texto); font-weight: 600; }
 .rodape a { color: var(--texto); }
 .creditos { grid-column: 1 / -1; font-size: .8125rem; padding-top: 16px; border-top: 1px solid var(--fio); }
+.creditos-casa { border-top: 0; padding-top: 0; }
 .acess { display: flex; gap: 10px; align-items: flex-start; margin-top: 12px; }
 .acess svg { width: 26px; height: 26px; flex: none; color: var(--texto); }
 
@@ -401,3 +403,43 @@ main { z-index: 2; }
 @media (min-width: 1000px) and (min-aspect-ratio: 1/1) {
   #casa-video { top: 0; bottom: 0; height: auto; left: 30vw; -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%); mask-image: linear-gradient(90deg, transparent, #000 12%); }
 }
+
+/* Vistoria: a casa de verdade, cômodo por cômodo, em fotos reais. */
+#vistoria { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; background: var(--noite); opacity: 0; visibility: hidden; transition: opacity .5s, visibility .5s; clip-path: inset(calc(100% - var(--revela, 0%)) 0 0 0); }
+#vistoria.ligado { opacity: 1; visibility: visible; }
+.v-cena { position: absolute; inset: 0; opacity: 0; transform: scale(1.05); transition: opacity 1s ease, transform 1.6s var(--saida); }
+.v-cena.on { opacity: 1; transform: none; }
+.v-cena.sai { opacity: 0; transform: scale(.985); }
+.v-cena.sai-porta { opacity: 0; transform: scale(1.4); transform-origin: var(--porta, 50% 62%); transition: opacity .9s ease .25s, transform 1.5s cubic-bezier(.55, 0, .3, 1); }
+.v-cena img { position: absolute; left: 0; top: 0; max-width: none; width: auto; height: auto; transform-origin: 0 0; transition: transform 1.3s var(--saida); user-select: none; }
+.v-cena::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(10 26 58 / .34), transparent 20%, transparent 72%, rgb(10 26 58 / .28)); }
+.v-marcas { position: absolute; inset: 0; z-index: 2; }
+.v-marca { position: absolute; left: 0; top: 0; width: 0; height: 0; opacity: 0; animation: v-entra .5s var(--saida) calc(.9s + var(--i) * .14s) forwards; }
+.v-marca::before, .v-marca::after { content: ""; position: absolute; left: -7px; top: -7px; width: 14px; height: 14px; border-radius: 50%; }
+.v-marca::before { background: var(--vermelho); box-shadow: 0 0 0 2px #fff, 0 3px 10px rgb(10 26 58 / .45); }
+.v-marca::after { border: 2px solid #fff; animation: v-pulso 2.2s ease-out infinite; }
+.v-marca span { position: absolute; left: 16px; top: calc(-15px + var(--dy, 0px)); padding: 8px 12px; border-radius: 999px; background: var(--vermelho); color: #fff; font: 600 .8125rem/1 var(--f); letter-spacing: -.01em; white-space: nowrap; box-shadow: 0 6px 18px rgb(10 26 58 / .3); }
+.v-marca.esq span { left: auto; right: 16px; }
+.v-marca.fora { visibility: hidden; }
+.v-lente { position: absolute; left: 0; top: 0; z-index: 3; width: clamp(148px, 18vw, 250px); aspect-ratio: 1; margin: 0; opacity: 0; scale: .8; transition: opacity .45s, scale .6s var(--saida); }
+.v-lente.on { opacity: 1; scale: 1; }
+.v-olho { position: absolute; inset: 8%; border-radius: 50%; overflow: hidden; background: var(--noite); box-shadow: 0 0 0 3px #fff, 0 18px 44px rgb(10 26 58 / .42); }
+.v-olho img, .v-olho video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.v-olho video { opacity: 0; transition: opacity .4s; }
+.v-olho video.on { opacity: 1; }
+.v-iris { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: var(--vermelho); stroke-width: 2.4; stroke-linecap: round; filter: drop-shadow(0 1px 2px rgb(10 26 58 / .35)); animation: v-gira 48s linear infinite; }
+.v-especie { position: absolute; left: 50%; top: 100%; translate: -50% 4px; padding: 6px 12px; border-radius: 999px; background: rgb(255 255 255 / .95); color: var(--texto); font: 600 .8125rem/1.2 var(--f); letter-spacing: -.01em; white-space: nowrap; box-shadow: 0 6px 18px rgb(10 26 58 / .2); }
+.v-guia { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; opacity: 0; transition: opacity .4s .35s; }
+.v-guia.on { opacity: 1; }
+.v-guia line { stroke: #fff; stroke-width: 1.6; stroke-dasharray: 4 5; filter: drop-shadow(0 1px 2px rgb(10 26 58 / .55)); }
+.v-scan { position: absolute; left: 0; right: 0; top: calc(100% - var(--revela, 0%)); z-index: 4; height: 2px; background: var(--vermelho); box-shadow: 0 0 16px 3px rgb(215 38 46 / .5); opacity: 0; transition: opacity .3s; }
+.v-scan.on { opacity: 1; }
+@keyframes v-entra { from { opacity: 0; translate: 0 6px; } to { opacity: 1; translate: 0 0; } }
+@keyframes v-pulso { 0% { transform: scale(1); opacity: .9; } 70%, 100% { transform: scale(2.8); opacity: 0; } }
+@keyframes v-gira { to { transform: rotate(360deg); } }
+.com-vistoria #marcas { display: none; }
+.com-vistoria .praga-foto { display: none; }
+.calmo .v-marca::after, .calmo .v-iris { animation: none; }
+.calmo .v-marca { animation-duration: .01s; }
+@media (prefers-reduced-motion: reduce) { .v-marca::after, .v-iris { animation: none; } }
+.com-vistoria .praga .desenho { display: none; }

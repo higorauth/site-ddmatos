@@ -68,12 +68,27 @@
   const retrato = () => !window.matchMedia('(min-width: 1000px) and (min-aspect-ratio: 1/1)').matches;
   if ('IntersectionObserver' in window) {
     const mostra = new Set();
+    const primeira = $('.praga');
+    // Entre um cartão e outro nenhum fica na faixa: a casa continua no último cômodo em vez de voltar para a fachada.
+    // Volta para a fachada só acima do primeiro capítulo.
+    const acima = () => !primeira || primeira.getBoundingClientRect().top > window.innerHeight * .5;
+    const decide = () => {
+      let id = mostra.size ? Array.from(mostra).pop() : null;
+      if (!id && atual && !acima()) id = atual;
+      if (id !== atual) { atual = id; ativaPraga(id); }
+    };
     const io = new IntersectionObserver((es) => {
       es.forEach((e) => { if (e.isIntersecting) mostra.add(e.target.dataset.praga); else mostra.delete(e.target.dataset.praga); });
-      const id = mostra.size ? Array.from(mostra).pop() : null;
-      if (id !== atual) { atual = id; ativaPraga(id); }
+      decide();
     }, { rootMargin: retrato() ? '-58% 0px -22% 0px' : '-38% 0px -38% 0px' });
     $$('.praga').forEach((a) => io.observe(a));
+    // Um salto pelo menu pode levar para cima do primeiro capítulo sem que nenhum cartão cruze a faixa.
+    let conferindo = false;
+    window.addEventListener('scroll', () => {
+      if (conferindo || !atual || mostra.size) return;
+      conferindo = true;
+      requestAnimationFrame(() => { conferindo = false; if (!mostra.size && atual && acima()) decide(); });
+    }, { passive: true });
 
     /* Linha ativa do comprovante: acende a linha na folha. */
     const itens = $$('[data-linha]');
