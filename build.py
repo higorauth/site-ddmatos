@@ -132,6 +132,10 @@ def main():
     (DIST / 'fotos').mkdir(exist_ok=True)
     for f in FOTOS:
         shutil.copy(SRC / 'fotos' / f'{f}.webp', DIST / 'fotos' / f'{f}.webp')
+    # Vídeos da casa, para navegador sem placa de vídeo.
+    (DIST / 'videos').mkdir(exist_ok=True)
+    for v in sorted((SRC / 'videos').glob('*')) if (SRC / 'videos').exists() else []:
+        shutil.copy(v, DIST / 'videos' / v.name)
     shutil.copy(webp, DIST / 'assets' / 'gaviao-mapa.webp')
     shutil.copy(SRC / 'vendor' / 'three.module.min.js', DIST / 'assets' / 'three.module.min.js')
     (DIST / 'assets' / 'site.js').write_text(f"window.GAVIAO_MAPA='assets/gaviao-mapa.webp';\nwindow.TRES_URL=new URL('assets/three.module.min.js',document.baseURI).href;\n{PRAGAS_JS}\n{cena}\n{casa3d}\n{app}\n", encoding='utf-8')
@@ -173,6 +177,9 @@ def main():
         (alvo.parent / 'fotos').mkdir(exist_ok=True)
         for f in FOTOS:
             shutil.copy(SRC / 'fotos' / f'{f}.webp', alvo.parent / 'fotos' / f'{f}.webp')
+        (alvo.parent / 'videos').mkdir(exist_ok=True)
+        for v in sorted((SRC / 'videos').glob('*')) if (SRC / 'videos').exists() else []:
+            shutil.copy(v, alvo.parent / 'videos' / v.name)
         b64 = base64.b64encode(webp.read_bytes()).decode()
         art = f"""<title>{nome} Site Modelo</title>
 <meta name="claude:viewport-fit-sides" content="cover">

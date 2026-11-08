@@ -1,5 +1,9 @@
 # Site da dedetizadora
 
+## Repositório
+
+O código está em https://github.com/higorauth/site-ddmatos. O arquivo `.github/workflows/publicar.yml` publica a pasta `dist/` no GitHub Pages a cada envio para a `main`, depois que o Pages for ligado no repositório.
+
 ## Para colocar no ar
 
 1. Abra `dados-da-empresa.json` e preencha os campos.
@@ -24,8 +28,9 @@ Em `dist/fontes/` sobraram `saira.woff2` e `atkinson.woff2`, da versão anterior
 - `src/corpo.html`: textos da página.
 - `src/estilo.css`: aparência. Cores branco, vermelho e azul; fonte do sistema da Apple (SF Pro), com Inter nos outros aparelhos; botões no estilo do site da Meppy.
 - `src/cena.js`: animação em pontos (WebGL). Desenha o gavião, a casa de pontos e o comprovante, e controla a câmera da casa.
-- `src/casa3d.js`: a casa em 3D, com as pragas animadas, o encanamento e a caixa d'água. Usa o Three.js, que só é baixado quando a pessoa começa a rolar. Em aparelho sem WebGL 2, a casa de pontos e os desenhos dos serviços continuam no lugar.
+- `src/casa3d.js`: a casa em 3D, com as pragas animadas, o encanamento e a caixa d'água. Usa o Three.js, que só é baixado quando a pessoa começa a rolar. Em aparelho sem placa de vídeo, entra a casa em vídeo (veja `src/videos/`).
 - `src/vendor/three.module.min.js`: Three.js r170 (licença MIT).
+- `src/videos/`: a mesma casa 3D gravada em vídeo. Quando o navegador não tem placa de vídeo (ou ela travou), o site mostra esses vídeos no lugar da casa 3D, e o gavião continua animado em 2D. Se a casa 3D mudar, grave de novo com `ferramentas/grava-casa.mjs`.
 - `src/fotos/`: fotos das pragas. Todas têm licença livre, e os créditos ficam no rodapé. A do pernilongo é CC BY-SA 4.0, por isso o crédito com o link da licença não pode sair.
 - `src/app.js`: comportamento da página.
 - `ferramentas/pinta-gaviao.js`: desenha o gavião provisório. É aqui que a logo real entra.

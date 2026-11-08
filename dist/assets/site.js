@@ -796,7 +796,7 @@ window.CENA_PRAGAS={
         }
         if (est.forma > .001 && ca) {
           const cam = camCasa(est.t);
-          if (!(tem3d() && est.solido > .995 && est.morf < .005)) desenhaCasa(cam, est.t, fatia(est.forma, 0, .2));
+          if (!(tem3d() && est.solido > .995 && est.morf < .005) && !raiz.classList.contains('video-casa')) desenhaCasa(cam, est.t, fatia(est.forma, 0, .2));
           atualizaEtiquetas(cam);
           manda3d(cam, est.solido > .001 ? fatia(est.forma, 0, .2) * (1 - fatia(est.morf, .55, .95)) : 0);
         } else { if (marcas) marcas.classList.remove('ligada'); manda3d(null, 0); }
@@ -910,9 +910,12 @@ window.CENA_PRAGAS={
   const raiz = document.documentElement;
   const C3 = { pronta: false, falhou: false };
   window.Casa3D = C3;
+  // Sem placa de vídeo, a mesma casa aparece gravada em vídeo (como nos sites da Apple).
+  const CV = criaCasaVideo();
+  window.CasaVideo = CV;
   // Se a cena de pontos já caiu para o 2D, o navegador está sem placa de vídeo: nem tenta a casa 3D.
   const capaz = 'WebGL2RenderingContext' in window && !raiz.classList.contains('cena-2d') && (navigator.hardwareConcurrency || 8) > 2 && !(navigator.deviceMemory && navigator.deviceMemory < 2);
-  if (!capaz) return;
+  if (!capaz) { CV.liga(); return; }
   raiz.classList.add('com-3d');
 
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -947,6 +950,7 @@ window.CENA_PRAGAS={
   C3.pede = pede;
   function falha() {
     C3.falhou = true; C3.pronta = false;
+    CV.liga();
     raiz.classList.remove('com-3d');
     if (tela) tela.remove();
     if (window.Cena) window.Cena.acorda();
@@ -1861,6 +1865,62 @@ window.CENA_PRAGAS={
     W3 = W; H3 = H; celular = W < 760;
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, celular ? 1.5 : 1.75, Math.max(1, Math.sqrt((celular ? 1.8e6 : 2.4e6) / (W * H)))));
     renderer.setSize(W, H, false);
+  }
+
+  /* ---------- casa em vídeo ---------- */
+  function criaCasaVideo() {
+    const CV = { ativo: false };
+    const pasta = window.VIDEOS_URL || 'videos/';
+    const CLIPES = { baratas: 1, formigas: 1, ratos: 1, cupins: 1, mosquitos: 1, desentupimento: 1, caixa: 1 };
+    let caixa = null, vids = [], atual, frente = 0, abriu = false, pronta = false;
+    function monta() {
+      caixa = document.createElement('div'); caixa.id = 'casa-video'; caixa.setAttribute('aria-hidden', 'true');
+      const fundo = new Image(); fundo.alt = ''; fundo.decoding = 'async';
+      fundo.onload = () => { pronta = true; raiz.classList.add('com-video'); };
+      fundo.src = pasta + 'visao.jpg';
+      caixa.appendChild(fundo);
+      for (let i = 0; i < 2; i++) {
+        const v = document.createElement('video');
+        v.muted = true; v.defaultMuted = true; v.playsInline = true; v.disablePictureInPicture = true;
+        v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.preload = 'none';
+        caixa.appendChild(v); vids.push(v);
+      }
+      const ref = document.getElementById('casa3d') || document.getElementById('cena');
+      if (ref) ref.after(caixa); else document.body.prepend(caixa);
+    }
+    function toca(nome, calmo) {
+      if (nome === atual) return;
+      atual = nome;
+      const sai = vids[frente];
+      if (!nome) { sai.classList.remove('on'); return; }
+      frente = 1 - frente;
+      const v = vids[frente];
+      v.classList.remove('on');
+      v.loop = nome !== 'abertura';
+      v.poster = pasta + nome + '.jpg';
+      v.textContent = '';
+      for (const [ext, tipo] of [['mp4', 'video/mp4'], ['webm', 'video/webm']]) { const f = document.createElement('source'); f.src = pasta + nome + '.' + ext; f.type = tipo; v.appendChild(f); }
+      const mostra = () => {
+        if (atual !== nome) return;
+        v.classList.add('on'); sai.classList.remove('on');
+        setTimeout(() => { if (!sai.classList.contains('on')) sai.pause(); }, 800);
+      };
+      v.onended = nome === 'abertura' ? () => { abriu = true; } : null;
+      if (calmo) { v.preload = 'none'; v.load(); mostra(); return; }
+      v.preload = 'auto';
+      v.onloadeddata = () => { v.onloadeddata = null; const pr = v.play(); if (pr) pr.catch(() => {}); mostra(); };
+      v.load();
+    }
+    CV.liga = () => { CV.ativo = true; };
+    CV.quadro = (s) => {
+      if (!caixa) monta();
+      const vis = s.vis > .3 && s.solido > .03 && pronta;
+      caixa.classList.toggle('ligada', vis);
+      raiz.classList.toggle('video-casa', vis);
+      if (!vis) { if (atual) toca(null); abriu = false; return; }
+      toca(s.praga && CLIPES[s.praga] ? s.praga : !abriu && !s.calmo ? 'abertura' : null, s.calmo);
+    };
+    return CV;
   }
 
   /* Cada quadro chega do cena.js, com a mesma câmera da casa de pontos. */

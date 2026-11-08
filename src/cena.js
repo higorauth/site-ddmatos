@@ -785,7 +785,7 @@
         }
         if (est.forma > .001 && ca) {
           const cam = camCasa(est.t);
-          if (!(tem3d() && est.solido > .995 && est.morf < .005)) desenhaCasa(cam, est.t, fatia(est.forma, 0, .2));
+          if (!(tem3d() && est.solido > .995 && est.morf < .005) && !raiz.classList.contains('video-casa')) desenhaCasa(cam, est.t, fatia(est.forma, 0, .2));
           atualizaEtiquetas(cam);
           manda3d(cam, est.solido > .001 ? fatia(est.forma, 0, .2) * (1 - fatia(est.morf, .55, .95)) : 0);
         } else { if (marcas) marcas.classList.remove('ligada'); manda3d(null, 0); }
