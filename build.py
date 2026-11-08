@@ -196,6 +196,12 @@ window.GAVIAO_MAPA='data:image/webp;base64,{b64}';
 </script>
 """
         alvo.write_text(art, encoding='utf-8')
+    # Um erro de sintaxe em qualquer arquivo derruba o script inteiro (gavião, casa e botões). Se o Node estiver instalado, confere antes.
+    node = shutil.which('node')
+    if node:
+        r = subprocess.run([node, '--check', str(DIST / 'assets' / 'site.js')], capture_output=True, text=True)
+        if r.returncode != 0:
+            sys.exit('ERRO: site.js tem erro de sintaxe e não pode ser publicado.\n' + r.stderr)
     print(f'pronto: {len(faltam)} dados faltando ({faltando} lacunas); index {len(pagina)//1024} KB; site.js {(DIST/"assets"/"site.js").stat().st_size//1024} KB; mapa {webp.stat().st_size//1024} KB')
 
 main()

@@ -27,7 +27,7 @@ Em `dist/fontes/` sobraram `saira.woff2` e `atkinson.woff2`, da versão anterior
 - `dados-da-empresa.json`: o único arquivo que precisa ser editado.
 - `src/corpo.html`: textos da página.
 - `src/estilo.css`: aparência. Cores branco, vermelho e azul; fonte do sistema da Apple (SF Pro), com Inter nos outros aparelhos; botões no estilo do site da Meppy.
-- `src/cena.js`: animação em pontos. Desenha o gavião, o mergulho no olho e o comprovante, e faz o escaneamento que revela a casa. Usa WebGL; sem placa de vídeo, desenha o mesmo gavião em 2D.
+- `src/cena.js`: animação em pontos. Desenha o gavião, o mergulho no olho e a casa de pontos que o escaneamento transforma na foto. Usa WebGL; sem placa de vídeo, desenha o mesmo gavião em 2D e liga o modo leve (classe `leve`), que tira o desfoque do topo e os enfeites que rodam sem parar. Quando não há nada para desenhar, a cena para e só acorda com a rolagem.
 - `src/vistoria.js`: a casa de verdade. Mostra a foto de cada cômodo, as marcas vermelhas de onde a vistoria começa e a lente com o vídeo da praga. É feita só com fotos e vídeos, então funciona igual sem placa de vídeo.
 - `src/vistoria-cenas.js`: a configuração da casa. Para cada capítulo: a foto, o ponto da foto que a câmera mostra no computador e no celular, as marcas e a lente. As posições são frações da foto, de 0 a 1 (0,5 é o meio).
 - `src/midia/`: fotos dos cômodos (Pexels) e vídeos curtos das pragas (Wikimedia Commons, Pexels, Pixabay e Mixkit), já recortados e comprimidos. São de banco de imagens. O site avisa que servem de ilustração, e os créditos ficam no rodapé. O vídeo dos cupins é CC BY 2.0, por isso o crédito com o link da licença não pode sair. Para usar fotos da própria empresa, troque o arquivo mantendo o nome e ajuste as marcas em `vistoria-cenas.js`.
@@ -35,6 +35,8 @@ Em `dist/fontes/` sobraram `saira.woff2` e `atkinson.woff2`, da versão anterior
 - `src/fotos/`: fotos das pragas. Todas têm licença livre, e os créditos ficam no rodapé. A do pernilongo é CC BY-SA 4.0, por isso o crédito com o link da licença não pode sair.
 - `src/app.js`: comportamento da página.
 - `ferramentas/pinta-gaviao.js`: desenha o gavião provisório. É aqui que a logo real entra.
-- `dist/`: resultado pronto para hospedar. Não edite aqui, porque o `build.py` sobrescreve.
+- `dist/`: resultado pronto para hospedar. Não edite aqui, porque o `build.py` sobrescreve. Se o Node estiver instalado, o `build.py` confere o `site.js` e para com erro antes de gerar um script quebrado.
+
+Desempenho: com placa de vídeo, a rolagem roda a 60 quadros por segundo. Sem placa de vídeo (por exemplo, quando o Chrome desliga a aceleração depois de travar), tudo é desenhado pelo processador; numa tela Retina o site fica perto do limite do próprio navegador nesse modo. Para devolver a aceleração ao Chrome, feche-o por completo (Cmd+Q) e abra de novo.
 
 Para refazer o mapa do gavião, rode `node ferramentas/gera-gaviao.mjs 512`. Esse passo precisa do pacote `playwright-core` e do Chrome instalado. Depois rode `python3 build.py`, que precisa do `cwebp` quando o mapa muda.

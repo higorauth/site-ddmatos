@@ -6,11 +6,11 @@
   const raiz = document.documentElement;
   const falha = () => { raiz.classList.add('sem-webgl'); if (tela) tela.remove(); };
   if (!tela) return;
-  let gl = tela.getContext('webgl', { alpha: true, antialias: false, depth: false, stencil: false, powerPreference: 'high-performance', premultipliedAlpha: true });
+  let gl = tela.getContext('webgl', { alpha: true, antialias: false, depth: false, stencil: false, powerPreference: 'high-performance', premultipliedAlpha: true, failIfMajorPerformanceCaveat: true });
   // Sem placa de vídeo (WebGL desligado), a cena continua em 2D: os mesmos pontos, desenhados pelo canvas comum.
   let c2 = gl ? null : tela.getContext('2d');
   if (!gl && !c2) return falha();
-  if (c2) raiz.classList.add('cena-2d');
+  if (c2) raiz.classList.add('cena-2d', 'leve');
 
   /* ---------- utilidades ---------- */
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -520,7 +520,7 @@
   };
 
   /* ---------- desenho em 2D (navegador sem placa de vídeo) ---------- */
-  const LIM2D = { ave: 15000, casa: 16000 };
+  const LIM2D = { ave: 15000, casa: 9000 };
   const sstep = (a, b, v) => { const t = clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
   const PALETA = (() => {
     const C = [.50, .62, .93], A = [.090, .278, .784], N = [.039, .102, .227];
@@ -626,7 +626,7 @@
     tela.replaceWith(nova); tela = nova; gl = null;
     c2 = tela.getContext('2d');
     if (!c2) { est.pronta = false; falha(); return; }
-    raiz.classList.add('cena-2d');
+    raiz.classList.add('cena-2d', 'leve');
     if (av) av = { dados: av.dados, n: av.n };
     if (ca) ca = { dados: ca.dados, n: ca.n };
     est.W = 0; ajusta();
@@ -743,17 +743,27 @@
   }
 
   /* ---------- laço ---------- */
-  let ultimo = 0, medidas = 0, somaMs = 0, parado = true;
+  let ultimo = 0, medidas = 0, somaMs = 0, parado = true, estavel = false, mexida = 0, impar = false, pulou = false, sujo = true;
   function quadro(agora) {
     parado = false;
+    // Sem placa de vídeo e com a página parada, o gavião anda a 30 quadros por segundo: o movimento dele é lento,
+    // e o processador fica livre para a rolagem.
+    if (c2 && estavel && !manual && agora - mexida > 400) {
+      impar = !impar;
+      if (impar) { pulou = true; requestAnimationFrame(quadro); return; }
+    }
+    const conta = !pulou; pulou = false;
     const dt = Math.min(.05, (agora - (ultimo || agora)) / 1000); ultimo = agora;
     const cal = calmo();
     if (!cal) est.t += dt;
     const y = window.scrollY, H = est.H, A = ancora;
     let aM = pw(y, [0, A.olhar, A.olharFim, A.pragas - .2 * H], [0, .6, .66, 1]);
-    let aF = pw(y, [A.olharFim + .25 * H, A.pragas + .1 * H], [0, 1]);
-    let aMo = pw(y, [A.como + .55 * H, A.comp - .05 * H], [0, 1]);
-    let aS = Math.min(pw(y, [A.pragas - .05 * H, A.pragas + .35 * H], [0, 1]), pw(y, [A.como + .15 * H, A.como + .6 * H], [1, 0]));
+    // A casa de pontos só aparece na entrada da casa, antes da foto. Depois do passeio, a seção "como funciona"
+    // (fundo branco) sobe por cima da foto; quando ela cobre a tela, a casa se desliga e não volta em pontos.
+    // O comprovante é um documento na própria página, não um desenho de pontos.
+    let aF = Math.min(pw(y, [A.olharFim + .25 * H, A.pragas + .1 * H], [0, 1]), pw(y, [A.como, A.como + .02 * H], [1, 0]));
+    let aMo = 0;
+    let aS = Math.min(pw(y, [A.pragas - .05 * H, A.pragas + .35 * H], [0, 1]), pw(y, [A.como, A.como + .02 * H], [1, 0]));
     let aA = pw(y, [A.pragas + .3 * H, A.pragas + .65 * H], [0, 1]);
     let aFim = pw(y, [A.papelFim - 1.1 * H, A.papelFim - .3 * H], [0, 1]);
     if (cal) { aM = aM > .4 ? 1 : 0; aF = aF > 0 ? 1 : 0; aMo = aMo > .5 ? 1 : 0; aFim = aFim > 0 ? 1 : 0; aS = aS > .5 ? 1 : 0; aA = aA > .5 ? 1 : 0; }
@@ -772,10 +782,17 @@
     est.acende = cal ? 1 : suave(fatia(est.intro, .55, .95));
 
     const coberto = y >= A.papel && y + H <= A.papelFim;
-    tela.classList.toggle('coberta', coberto);
+    // O que aparece no canvas neste quadro. Canvas vazio fica escondido: mesmo transparente, cobrir a tela inteira
+    // custa caro para o navegador, principalmente sem placa de vídeo.
+    const d0 = est.mergulho;
+    const veAve = !coberto && (est.fim > .001 || d0 < .97);
+    const veCasa = !coberto && est.fim <= .001 && est.forma > .001 && !!ca && !(temCasa() && est.solido > .995 && est.morf < .005) && !raiz.classList.contains('video-casa');
+    const temDesenho = veAve || veCasa;
+    tela.classList.toggle('coberta', !temDesenho);
+    if (temDesenho || sujo) { if (gl) gl.clear(gl.COLOR_BUFFER_BIT); else c2.clearRect(0, 0, tela.width, tela.height); }
+    sujo = temDesenho;
     if (coberto || est.fim > .001) manda3d(null, 0);
     if (!coberto) {
-      if (gl) gl.clear(gl.COLOR_BUFFER_BIT); else c2.clearRect(0, 0, tela.width, tela.height);
       if (est.fim > .001) {
         const p = poseAve(0);
         desenhaAve(p, est.fim, 1, est.t);
@@ -788,25 +805,35 @@
         }
         if (est.forma > .001 && ca) {
           const cam = camCasa(est.t);
-          if (!(temCasa() && est.solido > .995 && est.morf < .005) && !raiz.classList.contains('video-casa')) desenhaCasa(cam, est.t, fatia(est.forma, 0, .2));
+          if (veCasa) desenhaCasa(cam, est.t, fatia(est.forma, 0, .2));
           atualizaEtiquetas(cam);
           manda3d(cam, est.solido > .001 ? fatia(est.forma, 0, .2) * (1 - fatia(est.morf, .55, .95)) : 0);
         } else { if (marcas) marcas.classList.remove('ligada'); manda3d(null, 0); }
       }
     }
     // Se o aparelho sofrer, a cena reduz os pontos sozinha.
-    if (!cal && est.intro >= 1 && medidas < 90) {
+    if (!cal && conta && temDesenho && est.intro >= 1 && medidas < 90) {
       medidas++; somaMs += dt * 1000;
       if (medidas === 90 && somaMs / 90 > 30) {
         est.cortes.ave = .6; est.cortes.casa = .6;
+        raiz.classList.add('leve');
         if (est.qualidade === 1) { est.qualidade = .75; est.W = 0; ajusta(); }
       }
     }
+    // Tudo chegou onde devia? Então nada precisa ser redesenhado até a próxima rolagem.
+    const longe = (a, b) => Math.abs(a - b) > 1e-3;
+    let mexe = est.intro < 1 || longe(est.mergulho, aM) || longe(est.forma, aF) || longe(est.morf, aMo) || longe(est.fim, aFim) || longe(est.solido, aS) || longe(est.abre, aA)
+      || longe(est.zoomPraga, est.zoomPragaAlvo) || longe(est.dth, est.dthAlvo) || longe(est.dph, est.dphAlvo) || longe(est.ptrOn, est.ptrOnAlvo) || longe(est.ptr[0], est.ptrAlvo[0]) || longe(est.ptr[1], est.ptrAlvo[1]);
+    for (let i = 0; i < 3 && !mexe; i++) mexe = longe(est.foco[i], est.focoAlvo[i]);
+    for (let i = 0; i < 20 && !mexe; i++) mexe = longe(est.hot[i], est.hotAlvo[i]);
+    estavel = !mexe;
     if (document.hidden || (cal && est.quieto)) { parado = true; return; }
     if (cal) est.quieto = true;
+    // Sem desenho na tela e sem nada se mexendo, o laço dorme; a rolagem acorda de novo.
+    if (!cal && !temDesenho && !mexe && !manual) { parado = true; return; }
     if (!manual) requestAnimationFrame(quadro);
   }
-  const acorda = () => { est.quieto = false; if (parado && est.pronta && !manual) { ultimo = 0; requestAnimationFrame(quadro); } };
+  const acorda = () => { est.quieto = false; mexida = performance.now(); if (parado && est.pronta && !manual) { ultimo = 0; requestAnimationFrame(quadro); } };
 
   /* API para a página. */
   const PRAGAS = window.CENA_PRAGAS || {};
@@ -845,7 +872,7 @@
     mede,
     get pronta() { return est.pronta; },
     get modo() { return gl ? 'webgl' : '2d'; },
-    get estado() { return { forma: est.forma, solido: est.solido, abre: est.abre, morf: est.morf, praga: est.pragaId, zoom: est.zoomPraga }; },
+    get estado() { return { forma: est.forma, solido: est.solido, abre: est.abre, morf: est.morf, praga: est.pragaId, zoom: est.zoomPraga, estavel, parado }; },
   };
 
   tela.addEventListener('webglcontextlost', (e) => { e.preventDefault(); vira2D(); });

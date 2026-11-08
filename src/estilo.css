@@ -71,15 +71,45 @@ main { z-index: 2; }
 .marca-lugar.esq::before { left: auto; right: -16px; }
 
 /* Topo: barra translúcida, como a da Apple. */
-.topo { position: fixed; top: 0; left: 0; right: 0; z-index: 20; padding-top: env(safe-area-inset-top, 0px); background: rgb(255 255 255 / .72); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 1px 0 transparent; transition: box-shadow .3s, background-color .3s; }
-.topo.solido { background: rgb(255 255 255 / .84); box-shadow: 0 1px 0 var(--fio); }
+.topo { position: fixed; top: 0; left: 0; right: 0; z-index: 20; padding-top: env(safe-area-inset-top, 0px); background: var(--branco); box-shadow: 0 1px 0 transparent; transition: box-shadow .3s, background-color .3s; }
+.topo.solido { box-shadow: 0 1px 0 var(--fio); }
+/* Vidro fosco só quando há placa de vídeo: sem ela, o desfoque refeito a cada quadro da rolagem pesa demais. */
+html:not(.leve) .topo { background: rgb(255 255 255 / .72); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); }
+html:not(.leve) .topo.solido { background: rgb(255 255 255 / .84); }
 .topo-in { display: flex; align-items: center; gap: 24px; height: var(--h-topo); max-width: 1320px; margin-inline: auto; padding-left: var(--calha); padding-right: var(--calha-d); }
 .marca { display: inline-flex; align-items: center; gap: 10px; font: 700 1.1875rem/1 var(--f); letter-spacing: -.03em; text-decoration: none; margin-right: auto; }
 .marca-ave { width: 32px; height: 27px; fill: var(--azul); }
-.menu { display: none; gap: 26px; font-size: .875rem; letter-spacing: -.01em; }
-.menu a { text-decoration: none; color: var(--texto-2); padding: 6px 0; transition: color var(--rapido); }
-.menu a:hover, .menu a[aria-current] { color: var(--texto); }
-.menu a[aria-current] { font-weight: 600; }
+/* Menu: no celular e em telas médias é um painel que desce do topo; a partir de 1280 px fica em linha. */
+.menu { position: absolute; left: 0; right: 0; top: 100%; display: grid; padding: 4px var(--calha-d) 16px var(--calha); background: var(--branco); box-shadow: 0 1px 0 var(--fio), 0 28px 44px rgb(10 26 58 / .14); max-height: calc(100dvh - var(--h-topo) - env(safe-area-inset-top, 0px)); overflow-y: auto; overscroll-behavior: contain; visibility: hidden; opacity: 0; translate: 0 -6px; transition: opacity .18s, translate .25s var(--saida), visibility 0s .25s; }
+.topo.aberto .menu { visibility: visible; opacity: 1; translate: 0 0; transition: opacity .18s, translate .25s var(--saida); }
+.menu a { display: flex; align-items: center; min-height: 52px; border-bottom: 1px solid var(--fio); font-weight: 600; font-size: 1.125rem; letter-spacing: -.016em; color: var(--texto); text-decoration: none; }
+.menu a:last-child { border-bottom: 0; }
+.menu a[aria-current] { color: var(--vermelho); }
+.menu-botao { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: var(--nevoa); color: var(--texto); font: 600 .9375rem/1 var(--f); letter-spacing: -.01em; cursor: pointer; transition: background-color var(--rapido); }
+.menu-botao:hover { background: var(--fio); }
+.menu-icone { position: relative; flex: none; width: 16px; height: 10px; }
+.menu-icone i { position: absolute; left: 0; right: 0; height: 2px; border-radius: 2px; background: currentColor; transition: top .25s var(--saida), rotate .25s var(--saida); }
+.menu-icone i:first-child { top: 0; }
+.menu-icone i:last-child { top: 8px; }
+.topo.aberto .menu-icone i { top: 4px; }
+.topo.aberto .menu-icone i:first-child { rotate: 45deg; }
+.topo.aberto .menu-icone i:last-child { rotate: -45deg; }
+/* Celular: o botão do menu fica só com o ícone (o nome continua para leitores de tela). */
+@media (max-width: 439px) {
+  .topo-in { gap: 10px; }
+  .menu-botao { width: 44px; height: 44px; padding: 0; justify-content: center; }
+  .menu-txt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+@media (max-width: 359px) {
+  .topo .botao-acao span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+@media (min-width: 1280px) {
+  .menu { position: static; display: flex; gap: 24px; padding: 0; background: none; box-shadow: none; max-height: none; overflow: visible; visibility: visible; opacity: 1; translate: none; transition: none; }
+  .menu a { display: inline; min-height: 0; padding: 6px 0; border: 0; font-weight: 400; font-size: .875rem; letter-spacing: -.01em; color: var(--texto-2); transition: color var(--rapido); }
+  .menu a:hover, .menu a[aria-current] { color: var(--texto); }
+  .menu a[aria-current] { font-weight: 600; }
+  .menu .so-painel, .menu-botao { display: none; }
+}
 .progresso { height: 2px; background: transparent; overflow: hidden; }
 .progresso span { display: block; height: 100%; background: var(--vermelho); transform: scaleX(0); transform-origin: left; }
 
@@ -143,8 +173,9 @@ main { z-index: 2; }
 
 /* Pragas. */
 .pragas { padding-top: 12vh; }
-.pragas > .faixa:first-child .coluna, .como .coluna { padding: 16px; margin-inline: -16px; border-radius: 24px; background: rgb(255 255 255 / .92); }
-.chips { position: sticky; top: calc(var(--h-topo) + 2px + env(safe-area-inset-top, 0px)); z-index: 3; margin-top: 22px; padding-block: 8px; background: rgb(255 255 255 / .86); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+.pragas > .faixa:first-child .coluna { padding: 16px; margin-inline: -16px; border-radius: 24px; background: rgb(255 255 255 / .92); }
+.chips { position: sticky; top: calc(var(--h-topo) + 2px + env(safe-area-inset-top, 0px)); z-index: 3; margin-top: 22px; padding-block: 8px; background: var(--branco); }
+html:not(.leve) .chips { background: rgb(255 255 255 / .86); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
 .chips-in { position: relative; display: flex; gap: 2px; width: fit-content; padding: 4px; border-radius: 999px; background: var(--nevoa); box-shadow: inset 0 0 0 1px var(--fio); overflow-x: auto; scrollbar-width: none; margin-inline: var(--calha) var(--calha-d); max-width: calc(100% - var(--calha) - var(--calha-d)); }
 .chips-in::-webkit-scrollbar { display: none; }
 .chips-in::before { content: ""; position: absolute; top: 4px; bottom: 4px; left: 0; width: var(--w, 0px); translate: var(--x, 0px) 0; border-radius: 999px; background: var(--branco); box-shadow: 0 1px 2px rgb(10 26 58 / .08), 0 4px 12px rgb(10 26 58 / .08); opacity: var(--o, 0); transition: translate .45s var(--saida), width .45s var(--saida), opacity .2s; }
@@ -169,7 +200,8 @@ main { z-index: 2; }
 .outra a { color: var(--azul); font-weight: 600; }
 
 /* Como funciona. */
-.como { padding-block: 20vh 10vh; }
+/* Depois do passeio, a página volta ao branco: a seção sobe como uma folha por cima da foto. */
+.como { position: relative; padding-block: 12vh 8vh; background: var(--branco); border-radius: 32px 32px 0 0; box-shadow: 0 -18px 40px rgb(10 26 58 / .16); }
 .passos { counter-reset: passo; margin-top: 30px; display: grid; }
 .passos li { counter-increment: passo; position: relative; display: grid; grid-template-columns: 3rem 1fr; column-gap: 14px; padding-block: 4px 26px; }
 .passos li:not(:last-child)::after { content: ""; position: absolute; left: calc(1.5rem - 1px); top: 3.1rem; bottom: 4px; width: 2px; background: linear-gradient(var(--azul), rgb(23 71 200 / .15)); }
@@ -178,8 +210,13 @@ main { z-index: 2; }
 .passos p { color: var(--texto-2); margin-top: 6px; }
 
 /* Comprovante. */
-.comprovante { padding-block: 58vh 10vh; }
-.comprovante .coluna { padding: 16px; margin-inline: -16px; border-radius: 24px; background: rgb(255 255 255 / .94); }
+.comprovante { position: relative; padding-block: 6vh 12vh; background: var(--branco); }
+.comprovante-in { display: grid; gap: 32px; }
+.recibo { max-width: 36rem; padding: 24px 22px 28px; border-radius: 10px; background: var(--branco); box-shadow: 0 0 0 1px var(--fio), 0 22px 48px rgb(10 26 58 / .10); }
+.recibo-titulo { padding-bottom: 14px; border-bottom: 2px solid var(--texto); font-weight: 700; font-size: 1.125rem; letter-spacing: -.02em; }
+.recibo .itens { margin-top: 0; }
+.recibo .itens li:first-child { border-top: 0; }
+.recibo-assina { width: min(16rem, 70%); margin-top: 34px; padding-top: 8px; border-top: 1px solid var(--texto); font-size: .8125rem; color: var(--texto-2); }
 .itens { counter-reset: item; margin-top: 24px; display: grid; }
 .itens li { counter-increment: item; display: grid; grid-template-columns: 2rem 1fr; column-gap: 8px; padding-block: 11px; border-top: 1px solid var(--fio); transition: color .25s; }
 .itens li::before { content: counter(item); grid-row: 1 / span 2; font-weight: 600; font-size: 1.0625rem; line-height: 1.4; color: var(--texto-2); font-variant-numeric: tabular-nums; transition: color .25s; }
@@ -356,15 +393,12 @@ main { z-index: 2; }
   .abertura { align-items: center; padding-bottom: 22px; }
   .abertura-in { max-width: max(22rem, calc(63.5vw - 25.4vh - max(0px, (100vw - 1320px) / 2) - var(--calha) - 24px)); gap: 22px; }
   .pragas { padding-top: 10vh; }
-  .pragas > .faixa:first-child .coluna, .como .coluna { padding: 0; margin-inline: 0; background: transparent; }
-  .chips { background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; pointer-events: none; }
+  .pragas > .faixa:first-child .coluna { padding: 0; margin-inline: 0; background: transparent; }
+  .chips, html:not(.leve) .chips { background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; pointer-events: none; }
   .chips-in { pointer-events: auto; margin-left: max(var(--calha), calc((100vw - 1320px) / 2 + var(--calha))); box-shadow: inset 0 0 0 1px var(--fio), 0 8px 24px rgb(10 26 58 / .06); }
   .praga { padding: 24px 26px; background: rgb(255 255 255 / .95); box-shadow: 0 0 0 1px var(--fio), 0 24px 60px rgb(10 26 58 / .10); border-radius: 30px; margin-top: 22vh; min-height: 44vh; align-content: center; }
   .servicos > .faixa:first-child .coluna { padding: 24px 26px; margin-inline: 0; border-radius: 30px; background: rgb(255 255 255 / .95); box-shadow: 0 0 0 1px var(--fio); }
   .praga:first-of-type { margin-top: 70vh; }
-  .como { padding-block: 24vh 14vh; }
-  .comprovante { padding-block: 8vh 14vh; }
-  .comprovante .coluna { padding: 0; margin: 0; background: transparent; }
   .outra { margin-top: 18vh; }
   .final { align-items: center; padding-block: 16vh; }
 }
@@ -372,7 +406,7 @@ main { z-index: 2; }
 @media (max-height: 520px) {
   .abertura-in { padding: 12px; margin-inline: -12px; border-radius: 20px; background: rgb(255 255 255 / .9); }
 }
-@media (min-width: 1080px) { .menu { display: flex; } .topo-in { gap: 32px; } }
+@media (min-width: 1280px) { .topo-in { gap: 32px; } }
 .desenho .rotulos text { font: 500 13px var(--f); letter-spacing: -.01em; fill: var(--texto-2); }
 
 /* Capítulos de serviço dentro da casa 3D. */
@@ -409,6 +443,7 @@ main { z-index: 2; }
 #vistoria.ligado { opacity: 1; visibility: visible; }
 .v-cena { position: absolute; inset: 0; opacity: 0; transform: scale(1.05); transition: opacity 1s ease, transform 1.6s var(--saida); }
 .v-cena.on { opacity: 1; transform: none; }
+.v-cena:not(.on):not(.sai):not(.sai-porta) { visibility: hidden; }
 .v-cena.sai { opacity: 0; transform: scale(.985); }
 .v-cena.sai-porta { opacity: 0; transform: scale(1.4); transform-origin: var(--porta, 50% 62%); transition: opacity .9s ease .25s, transform 1.5s cubic-bezier(.55, 0, .3, 1); }
 .v-cena img { position: absolute; left: 0; top: 0; max-width: none; width: auto; height: auto; transform-origin: 0 0; transition: transform 1.3s var(--saida); user-select: none; }
@@ -429,7 +464,7 @@ main { z-index: 2; }
 .v-olho video.on { opacity: 1; }
 .v-iris { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: var(--vermelho); stroke-width: 2.4; stroke-linecap: round; filter: drop-shadow(0 1px 2px rgb(10 26 58 / .35)); animation: v-gira 48s linear infinite; }
 .v-especie { position: absolute; left: 50%; top: 100%; translate: -50% 4px; padding: 6px 12px; border-radius: 999px; background: rgb(255 255 255 / .95); color: var(--texto); font: 600 .8125rem/1.2 var(--f); letter-spacing: -.01em; white-space: nowrap; box-shadow: 0 6px 18px rgb(10 26 58 / .2); }
-.v-guia { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; opacity: 0; transition: opacity .4s .35s; }
+.v-guia { position: absolute; left: 0; top: 0; z-index: 2; overflow: visible; opacity: 0; transition: opacity .4s .35s; }
 .v-guia.on { opacity: 1; }
 .v-guia line { stroke: #fff; stroke-width: 1.6; stroke-dasharray: 4 5; filter: drop-shadow(0 1px 2px rgb(10 26 58 / .55)); }
 .v-scan { position: absolute; left: 0; right: 0; top: calc(100% - var(--revela, 0%)); z-index: 4; height: 2px; background: var(--vermelho); box-shadow: 0 0 16px 3px rgb(215 38 46 / .5); opacity: 0; transition: opacity .3s; }
@@ -443,3 +478,20 @@ main { z-index: 2; }
 .calmo .v-marca { animation-duration: .01s; }
 @media (prefers-reduced-motion: reduce) { .v-marca::after, .v-iris { animation: none; } }
 .com-vistoria .praga .desenho { display: none; }
+
+/* Modo leve: navegador sem placa de vídeo, ou aparelho que não deu conta da cena. Tudo é desenhado pelo processador,
+   então sai o que pesa e não faz falta: enfeites que rodam sem parar, camadas extras de tela inteira e zoom de tela inteira. */
+.leve .botao.vivo > .brilho::before, .leve .botao-pulsa.vivo, .leve .v-iris, .leve .v-marca::after,
+.leve .fluxo, .leve .ponto-alerta, .leve .onda, .leve .tampa { animation: none; }
+.leve .v-cena::after { display: none; }
+.leve .v-cena, .leve .v-cena.on, .leve .v-cena.sai, .leve .v-cena.sai-porta { transform: none; transition: opacity .45s ease; }
+.leve .v-cena img { transition: none; }
+
+/* Como funciona e comprovante em duas colunas no computador: o título fica parado enquanto os passos passam. */
+@media (min-width: 1000px) {
+  .como { padding-block: 14vh 10vh; }
+  .como .coluna { max-width: none; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: 72px; align-items: start; }
+  .como h2, .comprovante-txt { position: sticky; top: calc(var(--h-topo) + 48px); }
+  .como .passos { margin-top: 0; }
+  .comprovante-in { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: 72px; align-items: start; }
+}

@@ -8,15 +8,18 @@
       <svg class="marca-ave" viewBox="240 150 620 520" aria-hidden="true"><path fill-rule="evenodd" d="M520 176C458 160 404 164 352 196C322 200 292 216 276 246C262 272 258 306 270 344C276 322 288 306 312 302C330 299 350 304 368 314C366 332 374 348 388 360C420 426 404 512 374 604L368 660L846 660C824 600 806 546 780 490C748 420 716 330 664 268C626 222 574 190 520 176ZM444 211a29 29 0 1 0 .01 0Z"/></svg>
       <span>{{nome}}</span>
     </a>
-    <nav class="menu" aria-label="Seções do site">
+    <nav class="menu" id="menu" aria-label="Seções do site">
       <a href="#pragas">Pragas</a>
       <a href="#desentupimento">Desentupimento</a>
       <a href="#caixa-dagua">Caixa d'água</a>
-      <a href="#quem-responde">Licenças</a>
+      <a href="#como-funciona" class="so-painel">Como funciona</a>
       <a href="#preco-e-garantia">Preço e garantia</a>
+      <a href="#quem-responde">Licenças</a>
       <a href="#empresas">Empresas</a>
+      <a href="#cuidados">Dúvidas</a>
     </nav>
     <a class="botao botao-acao botao-p botao-pulsa" href="{{wa:Olá, vim pelo site. Quero um orçamento. Meu bairro é:}}">{{icone_wa}}<span>WhatsApp</span></a>
+    <button class="menu-botao" type="button" aria-expanded="false" aria-controls="menu"><span class="menu-icone" aria-hidden="true"><i></i><i></i></span><span class="menu-txt">Menu</span></button>
   </div>
   <div class="progresso" aria-hidden="true"><span id="progresso"></span></div>
 </header>
@@ -223,10 +226,14 @@
 </section>
 
 <section class="comprovante" id="comprovante" aria-labelledby="comp-t">
-  <div class="faixa">
-    <div class="coluna">
+  <div class="faixa comprovante-in">
+    <div class="comprovante-txt">
       <h2 id="comp-t">O serviço termina com um comprovante na sua mão</h2>
       <p class="intro">A RDC 622/2022, norma da Anvisa, pede 11 informações no comprovante de execução. É isto que você recebe.</p>
+      <p class="fecho">Guarde este documento. É com ele que você aciona a garantia.</p>
+    </div>
+    <div class="recibo">
+      <p class="recibo-titulo">Comprovante de execução de serviço</p>
       <ol class="itens">
         <li data-linha="0"><strong>Cliente</strong><span>Quem contratou o serviço</span></li>
         <li data-linha="1"><strong>Endereço</strong><span>Onde o serviço foi feito</span></li>
@@ -240,7 +247,7 @@
         <li data-linha="9"><strong>Centro de Informação Toxicológica</strong><span>Telefone para consulta</span></li>
         <li data-linha="10"><strong>Empresa</strong><span>Dados, licenças e validades</span></li>
       </ol>
-      <p class="fecho">Guarde este documento. É com ele que você aciona a garantia.</p>
+      <p class="recibo-assina">Assinatura do responsável técnico</p>
     </div>
   </div>
 </section>

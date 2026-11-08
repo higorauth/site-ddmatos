@@ -16,11 +16,11 @@ window.CENA_PRAGAS={
   const raiz = document.documentElement;
   const falha = () => { raiz.classList.add('sem-webgl'); if (tela) tela.remove(); };
   if (!tela) return;
-  let gl = tela.getContext('webgl', { alpha: true, antialias: false, depth: false, stencil: false, powerPreference: 'high-performance', premultipliedAlpha: true });
+  let gl = tela.getContext('webgl', { alpha: true, antialias: false, depth: false, stencil: false, powerPreference: 'high-performance', premultipliedAlpha: true, failIfMajorPerformanceCaveat: true });
   // Sem placa de vídeo (WebGL desligado), a cena continua em 2D: os mesmos pontos, desenhados pelo canvas comum.
   let c2 = gl ? null : tela.getContext('2d');
   if (!gl && !c2) return falha();
-  if (c2) raiz.classList.add('cena-2d');
+  if (c2) raiz.classList.add('cena-2d', 'leve');
 
   /* ---------- utilidades ---------- */
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -530,7 +530,7 @@ window.CENA_PRAGAS={
   };
 
   /* ---------- desenho em 2D (navegador sem placa de vídeo) ---------- */
-  const LIM2D = { ave: 15000, casa: 16000 };
+  const LIM2D = { ave: 15000, casa: 9000 };
   const sstep = (a, b, v) => { const t = clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
   const PALETA = (() => {
     const C = [.50, .62, .93], A = [.090, .278, .784], N = [.039, .102, .227];
@@ -636,7 +636,7 @@ window.CENA_PRAGAS={
     tela.replaceWith(nova); tela = nova; gl = null;
     c2 = tela.getContext('2d');
     if (!c2) { est.pronta = false; falha(); return; }
-    raiz.classList.add('cena-2d');
+    raiz.classList.add('cena-2d', 'leve');
     if (av) av = { dados: av.dados, n: av.n };
     if (ca) ca = { dados: ca.dados, n: ca.n };
     est.W = 0; ajusta();
@@ -753,17 +753,27 @@ window.CENA_PRAGAS={
   }
 
   /* ---------- laço ---------- */
-  let ultimo = 0, medidas = 0, somaMs = 0, parado = true;
+  let ultimo = 0, medidas = 0, somaMs = 0, parado = true, estavel = false, mexida = 0, impar = false, pulou = false, sujo = true;
   function quadro(agora) {
     parado = false;
+    // Sem placa de vídeo e com a página parada, o gavião anda a 30 quadros por segundo: o movimento dele é lento,
+    // e o processador fica livre para a rolagem.
+    if (c2 && estavel && !manual && agora - mexida > 400) {
+      impar = !impar;
+      if (impar) { pulou = true; requestAnimationFrame(quadro); return; }
+    }
+    const conta = !pulou; pulou = false;
     const dt = Math.min(.05, (agora - (ultimo || agora)) / 1000); ultimo = agora;
     const cal = calmo();
     if (!cal) est.t += dt;
     const y = window.scrollY, H = est.H, A = ancora;
     let aM = pw(y, [0, A.olhar, A.olharFim, A.pragas - .2 * H], [0, .6, .66, 1]);
-    let aF = pw(y, [A.olharFim + .25 * H, A.pragas + .1 * H], [0, 1]);
-    let aMo = pw(y, [A.como + .55 * H, A.comp - .05 * H], [0, 1]);
-    let aS = Math.min(pw(y, [A.pragas - .05 * H, A.pragas + .35 * H], [0, 1]), pw(y, [A.como + .15 * H, A.como + .6 * H], [1, 0]));
+    // A casa de pontos só aparece na entrada da casa, antes da foto. Depois do passeio, a seção "como funciona"
+    // (fundo branco) sobe por cima da foto; quando ela cobre a tela, a casa se desliga e não volta em pontos.
+    // O comprovante é um documento na própria página, não um desenho de pontos.
+    let aF = Math.min(pw(y, [A.olharFim + .25 * H, A.pragas + .1 * H], [0, 1]), pw(y, [A.como, A.como + .02 * H], [1, 0]));
+    let aMo = 0;
+    let aS = Math.min(pw(y, [A.pragas - .05 * H, A.pragas + .35 * H], [0, 1]), pw(y, [A.como, A.como + .02 * H], [1, 0]));
     let aA = pw(y, [A.pragas + .3 * H, A.pragas + .65 * H], [0, 1]);
     let aFim = pw(y, [A.papelFim - 1.1 * H, A.papelFim - .3 * H], [0, 1]);
     if (cal) { aM = aM > .4 ? 1 : 0; aF = aF > 0 ? 1 : 0; aMo = aMo > .5 ? 1 : 0; aFim = aFim > 0 ? 1 : 0; aS = aS > .5 ? 1 : 0; aA = aA > .5 ? 1 : 0; }
@@ -782,10 +792,17 @@ window.CENA_PRAGAS={
     est.acende = cal ? 1 : suave(fatia(est.intro, .55, .95));
 
     const coberto = y >= A.papel && y + H <= A.papelFim;
-    tela.classList.toggle('coberta', coberto);
+    // O que aparece no canvas neste quadro. Canvas vazio fica escondido: mesmo transparente, cobrir a tela inteira
+    // custa caro para o navegador, principalmente sem placa de vídeo.
+    const d0 = est.mergulho;
+    const veAve = !coberto && (est.fim > .001 || d0 < .97);
+    const veCasa = !coberto && est.fim <= .001 && est.forma > .001 && !!ca && !(temCasa() && est.solido > .995 && est.morf < .005) && !raiz.classList.contains('video-casa');
+    const temDesenho = veAve || veCasa;
+    tela.classList.toggle('coberta', !temDesenho);
+    if (temDesenho || sujo) { if (gl) gl.clear(gl.COLOR_BUFFER_BIT); else c2.clearRect(0, 0, tela.width, tela.height); }
+    sujo = temDesenho;
     if (coberto || est.fim > .001) manda3d(null, 0);
     if (!coberto) {
-      if (gl) gl.clear(gl.COLOR_BUFFER_BIT); else c2.clearRect(0, 0, tela.width, tela.height);
       if (est.fim > .001) {
         const p = poseAve(0);
         desenhaAve(p, est.fim, 1, est.t);
@@ -798,25 +815,35 @@ window.CENA_PRAGAS={
         }
         if (est.forma > .001 && ca) {
           const cam = camCasa(est.t);
-          if (!(temCasa() && est.solido > .995 && est.morf < .005) && !raiz.classList.contains('video-casa')) desenhaCasa(cam, est.t, fatia(est.forma, 0, .2));
+          if (veCasa) desenhaCasa(cam, est.t, fatia(est.forma, 0, .2));
           atualizaEtiquetas(cam);
           manda3d(cam, est.solido > .001 ? fatia(est.forma, 0, .2) * (1 - fatia(est.morf, .55, .95)) : 0);
         } else { if (marcas) marcas.classList.remove('ligada'); manda3d(null, 0); }
       }
     }
     // Se o aparelho sofrer, a cena reduz os pontos sozinha.
-    if (!cal && est.intro >= 1 && medidas < 90) {
+    if (!cal && conta && temDesenho && est.intro >= 1 && medidas < 90) {
       medidas++; somaMs += dt * 1000;
       if (medidas === 90 && somaMs / 90 > 30) {
         est.cortes.ave = .6; est.cortes.casa = .6;
+        raiz.classList.add('leve');
         if (est.qualidade === 1) { est.qualidade = .75; est.W = 0; ajusta(); }
       }
     }
+    // Tudo chegou onde devia? Então nada precisa ser redesenhado até a próxima rolagem.
+    const longe = (a, b) => Math.abs(a - b) > 1e-3;
+    let mexe = est.intro < 1 || longe(est.mergulho, aM) || longe(est.forma, aF) || longe(est.morf, aMo) || longe(est.fim, aFim) || longe(est.solido, aS) || longe(est.abre, aA)
+      || longe(est.zoomPraga, est.zoomPragaAlvo) || longe(est.dth, est.dthAlvo) || longe(est.dph, est.dphAlvo) || longe(est.ptrOn, est.ptrOnAlvo) || longe(est.ptr[0], est.ptrAlvo[0]) || longe(est.ptr[1], est.ptrAlvo[1]);
+    for (let i = 0; i < 3 && !mexe; i++) mexe = longe(est.foco[i], est.focoAlvo[i]);
+    for (let i = 0; i < 20 && !mexe; i++) mexe = longe(est.hot[i], est.hotAlvo[i]);
+    estavel = !mexe;
     if (document.hidden || (cal && est.quieto)) { parado = true; return; }
     if (cal) est.quieto = true;
+    // Sem desenho na tela e sem nada se mexendo, o laço dorme; a rolagem acorda de novo.
+    if (!cal && !temDesenho && !mexe && !manual) { parado = true; return; }
     if (!manual) requestAnimationFrame(quadro);
   }
-  const acorda = () => { est.quieto = false; if (parado && est.pronta && !manual) { ultimo = 0; requestAnimationFrame(quadro); } };
+  const acorda = () => { est.quieto = false; mexida = performance.now(); if (parado && est.pronta && !manual) { ultimo = 0; requestAnimationFrame(quadro); } };
 
   /* API para a página. */
   const PRAGAS = window.CENA_PRAGAS || {};
@@ -855,7 +882,7 @@ window.CENA_PRAGAS={
     mede,
     get pronta() { return est.pronta; },
     get modo() { return gl ? 'webgl' : '2d'; },
-    get estado() { return { forma: est.forma, solido: est.solido, abre: est.abre, morf: est.morf, praga: est.pragaId, zoom: est.zoomPraga }; },
+    get estado() { return { forma: est.forma, solido: est.solido, abre: est.abre, morf: est.morf, praga: est.pragaId, zoom: est.zoomPraga, estavel, parado }; },
   };
 
   tela.addEventListener('webglcontextlost', (e) => { e.preventDefault(); vira2D(); });
@@ -1032,7 +1059,9 @@ window.VISTORIA = {
   function aplica(k, cap, semAnimar) {
     k.cam = camera(k, cameraDe(k, cap));
     if (semAnimar) k.img.style.transition = 'none';
-    k.img.style.transform = `translate3d(${k.cam.x.toFixed(1)}px, ${k.cam.y.toFixed(1)}px, 0) scale(${k.cam.s.toFixed(4)})`;
+    // Transformação 2D de propósito: com translate3d a foto vira camada própria, e tudo o que fica por cima dela
+    // (marcas, linha da lente) vira mais camadas de tela inteira, caras de compor sem placa de vídeo.
+    k.img.style.transform = `translate(${k.cam.x.toFixed(1)}px, ${k.cam.y.toFixed(1)}px) scale(${k.cam.s.toFixed(4)})`;
     if (semAnimar) { void k.img.offsetWidth; k.img.style.transition = ''; }
   }
   const naTela = (k, nx, ny) => [k.cam.x + nx * k.cam.w, k.cam.y + ny * k.cam.h];
@@ -1085,7 +1114,7 @@ window.VISTORIA = {
     const fora = (x, y) => x < 12 || x > W - 12 || y < (largo ? 70 : 118) || y > H;
     const pontos = Array.from(k.marcas.children, (m) => {
       const [x, y] = naTela(k, +m.dataset.nx, +m.dataset.ny);
-      m.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+      m.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
       const f = fora(x, y);
       m.classList.toggle('fora', f);
       return { m, x, y, f };
@@ -1126,8 +1155,13 @@ window.VISTORIA = {
     lente.style.transform = `translate3d(${(lx - r).toFixed(1)}px, ${(ly - r).toFixed(1)}px, 0)`;
     const alvo = pontos[(largo || L.alvoCel == null ? L.alvo : L.alvoCel) || 0];
     const dx = alvo.x - lx, dy = alvo.y - ly, dd = Math.hypot(dx, dy) || 1;
-    traco.setAttribute('x1', (lx + dx / dd * (r + 4)).toFixed(1)); traco.setAttribute('y1', (ly + dy / dd * (r + 4)).toFixed(1));
-    traco.setAttribute('x2', (alvo.x - dx / dd * 11).toFixed(1)); traco.setAttribute('y2', (alvo.y - dy / dd * 11).toFixed(1));
+    // A linha ocupa só o retângulo dela: um SVG do tamanho da tela vira uma camada a mais para compor a cada quadro.
+    const ia = [lx + dx / dd * (r + 4), ly + dy / dd * (r + 4)], fa = [alvo.x - dx / dd * 11, alvo.y - dy / dd * 11];
+    const gx = Math.min(ia[0], fa[0]) - 6, gy = Math.min(ia[1], fa[1]) - 6;
+    guia.style.transform = `translate(${gx.toFixed(1)}px, ${gy.toFixed(1)}px)`;
+    guia.setAttribute('width', (Math.abs(fa[0] - ia[0]) + 12).toFixed(0)); guia.setAttribute('height', (Math.abs(fa[1] - ia[1]) + 12).toFixed(0));
+    traco.setAttribute('x1', (ia[0] - gx).toFixed(1)); traco.setAttribute('y1', (ia[1] - gy).toFixed(1));
+    traco.setAttribute('x2', (fa[0] - gx).toFixed(1)); traco.setAttribute('y2', (fa[1] - gy).toFixed(1));
     guia.classList.toggle('on', dd > r + 30 && !alvo.f);
   }
   function capitulo(id) {
@@ -1151,7 +1185,9 @@ window.VISTORIA = {
         }
         posiciona();
       };
-      if (k.img.complete && k.img.naturalWidth) entra(); else k.img.addEventListener('load', entra, { once: true });
+      // A foto entra já decodificada, para a troca de cômodo não engasgar.
+      const pronta = () => (k.img.decode ? k.img.decode().catch(() => {}) : Promise.resolve()).then(entra);
+      if (k.img.complete && k.img.naturalWidth) pronta(); else k.img.addEventListener('load', pronta, { once: true });
     } else { aplica(k, cap, false); posiciona(); }
   }
   // A largura das etiquetas muda quando a fonte termina de carregar.
@@ -1159,7 +1195,7 @@ window.VISTORIA = {
   window.addEventListener('resize', () => { const k = camadas[cenaAtual]; if (!k) return; aplica(k, capAtual ? cfg.capitulos[capAtual] : null, true); posiciona(); }, { passive: true });
 
   /* ---------- a cada quadro, o estado chega do cena.js ---------- */
-  let ligado = false, aquecido = false;
+  let ligado = false, aquecido = false, revelaAntes = '';
   V.quadro = (s) => {
     const vis = s.vis > .01;
     if (vis !== ligado) {
@@ -1170,7 +1206,9 @@ window.VISTORIA = {
     if (!aquecido) { aquecido = true; carrega(cfg.inicio); camadas[cfg.inicio].img.addEventListener('load', aquece, { once: true }); }
     // O escaneamento revela a casa de baixo para cima, por cima da casa de pontos.
     const r = Math.max(0, Math.min(1, s.solido));
-    palco.style.setProperty('--revela', (r * 100).toFixed(2) + '%');
+    // Só mexe no estilo quando o valor muda: escrever o mesmo valor a cada quadro também custa.
+    const rv = (r * 100).toFixed(1) + '%';
+    if (rv !== revelaAntes) { revelaAntes = rv; palco.style.setProperty('--revela', rv); }
     scan.classList.toggle('on', r > .003 && r < .997);
     capitulo(s.praga);
   };
@@ -1220,6 +1258,52 @@ window.VISTORIA = {
   window.addEventListener('scroll', () => { if (!pedido) { pedido = true; requestAnimationFrame(aoRolar); } }, { passive: true });
   window.addEventListener('resize', aoRolar, { passive: true });
   aoRolar();
+
+  /* Menu do celular e de telas médias: o botão abre um painel com todas as seções. */
+  const botaoMenu = $('.menu-botao'), menu = $('#menu');
+  if (botaoMenu && menu) {
+    const txt = $('.menu-txt', botaoMenu);
+    const abre = (sim) => {
+      topo.classList.toggle('aberto', sim);
+      botaoMenu.setAttribute('aria-expanded', String(sim));
+      if (txt) txt.textContent = sim ? 'Fechar' : 'Menu';
+    };
+    botaoMenu.addEventListener('click', () => {
+      const sim = !topo.classList.contains('aberto');
+      abre(sim);
+      const primeiro = $('a', menu);
+      if (sim && primeiro) primeiro.focus({ preventScroll: true });
+    });
+    menu.addEventListener('click', (e) => { if (e.target.closest('a')) abre(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && topo.classList.contains('aberto')) { abre(false); botaoMenu.focus(); } });
+    document.addEventListener('pointerdown', (e) => { if (topo.classList.contains('aberto') && !topo.contains(e.target)) abre(false); });
+    const largo = window.matchMedia('(min-width: 1280px)');
+    if (largo.addEventListener) largo.addEventListener('change', () => abre(false));
+  }
+
+  /* Links para outra parte da página: num salto longo, a página vai quase direto ao destino e só o fim é suave.
+     Rolar suave por 15 telas passa por todas as animações no caminho, demora e desorienta. */
+  document.addEventListener('click', (e) => {
+    // Botões de modelo (WhatsApp sem número) só mostram o recado: não rolam.
+    const a = e.target.closest && e.target.closest('a[href^="#"]:not([data-modelo])');
+    if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const id = decodeURIComponent(a.getAttribute('href').slice(1));
+    const alvo = id && document.getElementById(id);
+    if (!alvo) return;
+    const folga = (parseFloat(getComputedStyle(alvo).scrollMarginTop) || 0) + (parseFloat(getComputedStyle(raiz).scrollPaddingTop) || 0);
+    const destino = Math.max(0, alvo.getBoundingClientRect().top + window.scrollY - folga);
+    const distancia = destino - window.scrollY;
+    if (Math.abs(distancia) < window.innerHeight * 2.5) return;
+    e.preventDefault();
+    const antes = raiz.style.scrollBehavior;
+    raiz.style.scrollBehavior = 'auto';
+    window.scrollTo(0, destino - Math.sign(distancia) * window.innerHeight * .7);
+    raiz.style.scrollBehavior = antes;
+    window.scrollTo({ top: destino, behavior: raiz.classList.contains('calmo') ? 'auto' : 'smooth' });
+    if (history.pushState) history.pushState(null, '', '#' + id);
+    if (!alvo.hasAttribute('tabindex')) alvo.setAttribute('tabindex', '-1');
+    alvo.focus({ preventScroll: true });
+  });
 
   /* Praga ativa: acende os lugares na casa e desliza o marcador da barra até ela. */
   const chips = $$('[data-chip]');

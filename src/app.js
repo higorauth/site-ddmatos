@@ -42,6 +42,52 @@
   window.addEventListener('resize', aoRolar, { passive: true });
   aoRolar();
 
+  /* Menu do celular e de telas médias: o botão abre um painel com todas as seções. */
+  const botaoMenu = $('.menu-botao'), menu = $('#menu');
+  if (botaoMenu && menu) {
+    const txt = $('.menu-txt', botaoMenu);
+    const abre = (sim) => {
+      topo.classList.toggle('aberto', sim);
+      botaoMenu.setAttribute('aria-expanded', String(sim));
+      if (txt) txt.textContent = sim ? 'Fechar' : 'Menu';
+    };
+    botaoMenu.addEventListener('click', () => {
+      const sim = !topo.classList.contains('aberto');
+      abre(sim);
+      const primeiro = $('a', menu);
+      if (sim && primeiro) primeiro.focus({ preventScroll: true });
+    });
+    menu.addEventListener('click', (e) => { if (e.target.closest('a')) abre(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && topo.classList.contains('aberto')) { abre(false); botaoMenu.focus(); } });
+    document.addEventListener('pointerdown', (e) => { if (topo.classList.contains('aberto') && !topo.contains(e.target)) abre(false); });
+    const largo = window.matchMedia('(min-width: 1280px)');
+    if (largo.addEventListener) largo.addEventListener('change', () => abre(false));
+  }
+
+  /* Links para outra parte da página: num salto longo, a página vai quase direto ao destino e só o fim é suave.
+     Rolar suave por 15 telas passa por todas as animações no caminho, demora e desorienta. */
+  document.addEventListener('click', (e) => {
+    // Botões de modelo (WhatsApp sem número) só mostram o recado: não rolam.
+    const a = e.target.closest && e.target.closest('a[href^="#"]:not([data-modelo])');
+    if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const id = decodeURIComponent(a.getAttribute('href').slice(1));
+    const alvo = id && document.getElementById(id);
+    if (!alvo) return;
+    const folga = (parseFloat(getComputedStyle(alvo).scrollMarginTop) || 0) + (parseFloat(getComputedStyle(raiz).scrollPaddingTop) || 0);
+    const destino = Math.max(0, alvo.getBoundingClientRect().top + window.scrollY - folga);
+    const distancia = destino - window.scrollY;
+    if (Math.abs(distancia) < window.innerHeight * 2.5) return;
+    e.preventDefault();
+    const antes = raiz.style.scrollBehavior;
+    raiz.style.scrollBehavior = 'auto';
+    window.scrollTo(0, destino - Math.sign(distancia) * window.innerHeight * .7);
+    raiz.style.scrollBehavior = antes;
+    window.scrollTo({ top: destino, behavior: raiz.classList.contains('calmo') ? 'auto' : 'smooth' });
+    if (history.pushState) history.pushState(null, '', '#' + id);
+    if (!alvo.hasAttribute('tabindex')) alvo.setAttribute('tabindex', '-1');
+    alvo.focus({ preventScroll: true });
+  });
+
   /* Praga ativa: acende os lugares na casa e desliza o marcador da barra até ela. */
   const chips = $$('[data-chip]');
   const trilho = $('.chips-in'), barra = $('.chips');

@@ -72,7 +72,9 @@
   function aplica(k, cap, semAnimar) {
     k.cam = camera(k, cameraDe(k, cap));
     if (semAnimar) k.img.style.transition = 'none';
-    k.img.style.transform = `translate3d(${k.cam.x.toFixed(1)}px, ${k.cam.y.toFixed(1)}px, 0) scale(${k.cam.s.toFixed(4)})`;
+    // Transformação 2D de propósito: com translate3d a foto vira camada própria, e tudo o que fica por cima dela
+    // (marcas, linha da lente) vira mais camadas de tela inteira, caras de compor sem placa de vídeo.
+    k.img.style.transform = `translate(${k.cam.x.toFixed(1)}px, ${k.cam.y.toFixed(1)}px) scale(${k.cam.s.toFixed(4)})`;
     if (semAnimar) { void k.img.offsetWidth; k.img.style.transition = ''; }
   }
   const naTela = (k, nx, ny) => [k.cam.x + nx * k.cam.w, k.cam.y + ny * k.cam.h];
@@ -125,7 +127,7 @@
     const fora = (x, y) => x < 12 || x > W - 12 || y < (largo ? 70 : 118) || y > H;
     const pontos = Array.from(k.marcas.children, (m) => {
       const [x, y] = naTela(k, +m.dataset.nx, +m.dataset.ny);
-      m.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+      m.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
       const f = fora(x, y);
       m.classList.toggle('fora', f);
       return { m, x, y, f };
@@ -166,8 +168,13 @@
     lente.style.transform = `translate3d(${(lx - r).toFixed(1)}px, ${(ly - r).toFixed(1)}px, 0)`;
     const alvo = pontos[(largo || L.alvoCel == null ? L.alvo : L.alvoCel) || 0];
     const dx = alvo.x - lx, dy = alvo.y - ly, dd = Math.hypot(dx, dy) || 1;
-    traco.setAttribute('x1', (lx + dx / dd * (r + 4)).toFixed(1)); traco.setAttribute('y1', (ly + dy / dd * (r + 4)).toFixed(1));
-    traco.setAttribute('x2', (alvo.x - dx / dd * 11).toFixed(1)); traco.setAttribute('y2', (alvo.y - dy / dd * 11).toFixed(1));
+    // A linha ocupa só o retângulo dela: um SVG do tamanho da tela vira uma camada a mais para compor a cada quadro.
+    const ia = [lx + dx / dd * (r + 4), ly + dy / dd * (r + 4)], fa = [alvo.x - dx / dd * 11, alvo.y - dy / dd * 11];
+    const gx = Math.min(ia[0], fa[0]) - 6, gy = Math.min(ia[1], fa[1]) - 6;
+    guia.style.transform = `translate(${gx.toFixed(1)}px, ${gy.toFixed(1)}px)`;
+    guia.setAttribute('width', (Math.abs(fa[0] - ia[0]) + 12).toFixed(0)); guia.setAttribute('height', (Math.abs(fa[1] - ia[1]) + 12).toFixed(0));
+    traco.setAttribute('x1', (ia[0] - gx).toFixed(1)); traco.setAttribute('y1', (ia[1] - gy).toFixed(1));
+    traco.setAttribute('x2', (fa[0] - gx).toFixed(1)); traco.setAttribute('y2', (fa[1] - gy).toFixed(1));
     guia.classList.toggle('on', dd > r + 30 && !alvo.f);
   }
   function capitulo(id) {
@@ -191,7 +198,9 @@
         }
         posiciona();
       };
-      if (k.img.complete && k.img.naturalWidth) entra(); else k.img.addEventListener('load', entra, { once: true });
+      // A foto entra já decodificada, para a troca de cômodo não engasgar.
+      const pronta = () => (k.img.decode ? k.img.decode().catch(() => {}) : Promise.resolve()).then(entra);
+      if (k.img.complete && k.img.naturalWidth) pronta(); else k.img.addEventListener('load', pronta, { once: true });
     } else { aplica(k, cap, false); posiciona(); }
   }
   // A largura das etiquetas muda quando a fonte termina de carregar.
@@ -199,7 +208,7 @@
   window.addEventListener('resize', () => { const k = camadas[cenaAtual]; if (!k) return; aplica(k, capAtual ? cfg.capitulos[capAtual] : null, true); posiciona(); }, { passive: true });
 
   /* ---------- a cada quadro, o estado chega do cena.js ---------- */
-  let ligado = false, aquecido = false;
+  let ligado = false, aquecido = false, revelaAntes = '';
   V.quadro = (s) => {
     const vis = s.vis > .01;
     if (vis !== ligado) {
@@ -210,7 +219,9 @@
     if (!aquecido) { aquecido = true; carrega(cfg.inicio); camadas[cfg.inicio].img.addEventListener('load', aquece, { once: true }); }
     // O escaneamento revela a casa de baixo para cima, por cima da casa de pontos.
     const r = Math.max(0, Math.min(1, s.solido));
-    palco.style.setProperty('--revela', (r * 100).toFixed(2) + '%');
+    // Só mexe no estilo quando o valor muda: escrever o mesmo valor a cada quadro também custa.
+    const rv = (r * 100).toFixed(1) + '%';
+    if (rv !== revelaAntes) { revelaAntes = rv; palco.style.setProperty('--revela', rv); }
     scan.classList.toggle('on', r > .003 && r < .997);
     capitulo(s.praga);
   };
